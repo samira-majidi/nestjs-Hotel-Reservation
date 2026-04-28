@@ -1,0 +1,18 @@
+POST  http://localhost:3000/hotels
+Authorization: Bearer POST http://localhost:4000/hotels
+accept-encoding: gzip, deflate, br
+accept: */*
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQ5LCJlbWFpbCI6ImhhbWloZGdhZmdnc2RmQGdtYWlsLmNvbSIsInJvbGUiOiJob3N0IiwiaWF0IjoxNzc3MjM1ODQxLCJleHAiOjE3NzcyMzk0NDEsImF1ZCI6ImxvY2FsaG9zdDozMDAwIiwiaXNzIjoibG9jYWxob3N0OjMwMDAifQ.e1tgb61YrHpNRcpgaAl2BPtZW9mxjXBxXUNys7vaLVA
+Content-Type: application/json
+{
+  "name": "Grand Palace dsd Hotel",
+  "cityId": 1,
+  "address": "Boulevard, Dubai لاالال",
+  "description": "Luxury hotel with sea view rooms",
+  "amenities": [
+    "wifi",
+    "pool",
+  
+    "airport shuttle"
+  ]
+}

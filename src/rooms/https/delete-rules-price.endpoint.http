@@ -1,0 +1,6 @@
+
+### Delete Pricing Rule
+DELETE http://localhost:3000/pricing-rules/eae49286-bd11-4104-9c67-5b39eb623316/43ce05ef-8734-43ad-b4d9-af84ab280b76
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQ5LCJlbWFpbCI6ImhhbWloZGdhZmdnc2RmQGdtYWlsLmNvbSIsInJvbGUiOiJob3N0IiwiaWF0IjoxNzc3MzA1MDcyLCJleHAiOjE3NzczMDg2NzIsImF1ZCI6ImxvY2FsaG9zdDozMDAwIiwiaXNzIjoibG9jYWxob3N0OjMwMDAifQ.pesbdWN00rjEWtydoPg90AD0vL9BzpRZ-Xe0nFfm6NE
+
+

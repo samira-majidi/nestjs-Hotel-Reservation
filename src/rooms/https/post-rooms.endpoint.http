@@ -1,0 +1,13 @@
+### Create room
+POST http://localhost:3000/rooms/hotel/20
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQ5LCJlbWFpbCI6ImhhbWloZGdhZmdnc2RmQGdtYWlsLmNvbSIsInJvbGUiOiJob3N0IiwiaWF0IjoxNzc3Mjg2NDg4LCJleHAiOjE3NzcyOTAwODgsImF1ZCI6ImxvY2FsaG9zdDozMDAwIiwiaXNzIjoibG9jYWxob3N0OjMwMDAifQ.ivTE0FXquuBAqxKqwGYKv1LymyvL3uKTvnzfEEsJrAw
+{
+  "roomNumber":"82",
+  "type": "SINGLE",
+  "basePrice": 120,
+  "capacity": 2,
+  "floor": 1,
+  "amenities": ["wifi", "tv", "air_conditioner"]
+}
+

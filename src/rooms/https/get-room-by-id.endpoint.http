@@ -1,0 +1,3 @@
+### Get room by ID
+GET http://localhost:3000/rooms/cd77afda-9da1-49ca-8e92-d48637e1e183
+Accept: application/json

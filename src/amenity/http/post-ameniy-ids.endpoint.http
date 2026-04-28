@@ -1,0 +1,5 @@
+POST http://localhost:3000/amenity/list-of-amenity
+Content-Type:application/json
+{
+    "ids":[1,2,3]
+}
