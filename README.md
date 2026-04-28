@@ -1,9 +1,9 @@
-##Hotel Booking API
+## Hotel Booking API
 A scalable hotel booking backend built with NestJS, designed with modular architecture, RBAC authorization, distributed locking, caching, and background job processing.
 
 This project demonstrates how to build a production‑ready backend with features like authentication, role‑based permissions, resource ownership validation, dynamic room pricing, and reservation management.
 
-##Features
+## Features
 NestJS modular architecture
 JWT Authentication
 Role Based Access Control (RBAC)
@@ -91,7 +91,7 @@ The project follows a modular architecture where each domain is separated into i
 └── config
 
 
-##Each module typically contains:
+## Each module typically contains:
 
 DTOs
 Entities
@@ -113,7 +113,7 @@ findAll()
 Authorization
 Authorization is implemented in two layers.
 
-##1️⃣ Role Based Access Control (RBAC)
+## 1️⃣ Role Based Access Control (RBAC)
 Each role has a predefined set of permissions.
 
 Example roles:
@@ -136,7 +136,7 @@ Example usage:
 @Permissions(Permission.HOTEL_CREATE)
 @Post()
 
-##2️⃣ Ownership Based Authorization
+## 2️⃣ Ownership Based Authorization
 For resources that belong to a specific user (like hotels or rooms), an OwnershipGuard verifies that the authenticated user is the owner.
 
 Example:
@@ -250,23 +250,13 @@ Swagger documentation is available after running the project:
 
 
 http://localhost:3000/api
-Running Tests
+## Running Tests
+### Running Tests
 
-Unit tests:
-npm run test
-E2E tests:
+Basic HTTP-level tests (manual testing via API tools such as Postman or Insomnia) are supported.
 
+Automated unit/e2e tests will be added in future releases.
 
-npm run test:e2e
-Test coverage:
-
-
-npm run test:cov
-Future Improvements
-Payment gateway integration
-Rate limiting
-Email notifications
-Search and filtering for hotels
 Image upload for hotels and rooms
 Admin dashboard
 License
