@@ -1,9 +1,9 @@
-Hotel Booking API
+##Hotel Booking API
 A scalable hotel booking backend built with NestJS, designed with modular architecture, RBAC authorization, distributed locking, caching, and background job processing.
 
 This project demonstrates how to build a production‑ready backend with features like authentication, role‑based permissions, resource ownership validation, dynamic room pricing, and reservation management.
 
-Features
+##Features
 NestJS modular architecture
 JWT Authentication
 Role Based Access Control (RBAC)
@@ -28,46 +28,70 @@ Swagger
 Project Architecture
 The project follows a modular architecture where each domain is separated into its own module.
 
-text
-src
- ├── auth
- │   ├── guards
- │   ├── decorators
- │   ├── authorization
- │   └── providers
- │
- ├── rbac
- │   ├── guards
- │   ├── decorators
- │   └── mapping
- │
- ├── hotels
- │   ├── dtos
- │   ├── entities
- │   ├── https
- │   └── providers
- │
- ├── rooms
- │   ├── dtos
- │   ├── entity
- │   ├── providers
- │   └── processors
- │
- ├── reservations
- │   ├── dtos
- │   ├── entity
- │   └── providers
- │
- ├── redis
- │   └── providers
- │
- ├── common
- │   ├── dto
- │   ├── interceptors
- │   └── utils
- │
- └── config
-Each module typically contains:
+### Project Structure
+
+├── auth
+
+│ ├── guards
+
+│ ├── decorators
+
+│ ├── authorization
+
+│ └── providers
+
+├── rbac
+
+│ ├── guards
+
+│ ├── decorators
+
+│ └── mapping
+
+├── hotels
+
+│ ├── dtos
+
+│ ├── entities
+
+│ ├── https
+
+│ └── providers
+
+├── rooms
+
+│ ├── dtos
+
+│ ├── entity
+
+│ ├── providers
+
+│ └── processors
+
+├── reservations
+
+│ ├── dtos
+
+│ ├── entity
+
+│ └── providers
+
+├── redis
+
+│ └── providers
+
+├── common
+
+│ ├── dto
+
+│ ├── interceptors
+
+│ └── utils
+
+└── config
+
+
+##Each module typically contains:
 
 DTOs
 Entities
@@ -76,21 +100,20 @@ Services / Providers
 Domain specific logic
 Authentication
 Authentication is implemented using JWT Access Tokens.
-
+##
 The system uses a custom AuthenticationGuard which supports multiple authentication strategies:
 
 Bearer Token
 Public endpoints (no authentication)
 Example:
 
-text
 @Auth(AuthType.None)
 @Get()
 findAll()
 Authorization
 Authorization is implemented in two layers.
 
-1️⃣ Role Based Access Control (RBAC)
+##1️⃣ Role Based Access Control (RBAC)
 Each role has a predefined set of permissions.
 
 Example roles:
@@ -108,16 +131,16 @@ ROOM_DELETE
 BOOKING_CREATE
 Example usage:
 
-text
+
 @UseGuards(PermissionGuard)
 @Permissions(Permission.HOTEL_CREATE)
 @Post()
-2️⃣ Ownership Based Authorization
+
+##2️⃣ Ownership Based Authorization
 For resources that belong to a specific user (like hotels or rooms), an OwnershipGuard verifies that the authenticated user is the owner.
 
 Example:
 
-text
 @UseGuards(OwnershipGuard)
 @CheckOwnership('hotel', 'id')
 @Patch(':id')
@@ -137,7 +160,7 @@ When pricing rules are created or updated, the system generates 365 days of dail
 
 This is handled by a Bull queue processor:
 
-text
+
 @Processor('daily-price')
 The processor calculates and stores daily prices for fast reservation calculations.
 
@@ -154,7 +177,7 @@ To prevent double booking, the system uses:
 Redis Distributed Locks
 Before creating a reservation the system acquires a lock:
 
-text
+
 room:lock:{roomId}
 This ensures multiple users cannot book the same room simultaneously.
 
@@ -167,7 +190,7 @@ Fetching all reservations
 Fetching a specific reservation
 Cache TTL:
 
-text
+
 300 seconds
 
 Environment Variables
@@ -181,7 +204,7 @@ cp .env.development.example .env
 
 Example:
 
-text
+
 # Database
 DATABASE_HOST=localhost
 DATABASE_PORT=5432
@@ -205,40 +228,39 @@ REDIS_PASSWORD=YOUR_REDIS_PASSWORD
 Installation
 Clone the repository:
 
-text
+
 git clone https://github.com/your-username/hotel-booking-api.git
+
+###
 Install dependencies:
 
-text
 npm install
 Running the Application
 Development mode:
 
-text
 npm run start:dev
 Production mode:
 
-text
+
 npm run start:prod
 
 
 API Documentation
 Swagger documentation is available after running the project:
 
-text
+
 http://localhost:3000/api
 Running Tests
-Unit tests:
 
-text
+Unit tests:
 npm run test
 E2E tests:
 
-text
+
 npm run test:e2e
 Test coverage:
 
-text
+
 npm run test:cov
 Future Improvements
 Payment gateway integration
