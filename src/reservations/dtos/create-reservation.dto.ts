@@ -4,7 +4,6 @@ import {
   IsDateString,
   IsInt,
   IsOptional,
-  IsEmail,
   Min,
   MaxLength,
   Matches,
@@ -17,10 +16,10 @@ export class CreateReservationDto {
   @IsString()
   @MaxLength(100)
   guestName: string;
-
+  /*
   @IsEmail()
   guestEmail: string;
-
+*/
   @IsString()
   @IsOptional()
   @Matches(/^\+?[0-9\s-]{7,15}$/, {
@@ -29,10 +28,10 @@ export class CreateReservationDto {
   guestPhone?: string;
 
   @IsDateString()
-  checkInDate: string;
+  checkInDate: Date;
 
   @IsDateString()
-  checkOutDate: string;
+  checkOutDate: Date;
 
   @IsInt()
   @Min(1)

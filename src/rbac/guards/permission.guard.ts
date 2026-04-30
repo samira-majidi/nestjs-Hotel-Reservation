@@ -49,7 +49,7 @@ export class PermissionGuard implements CanActivate {
     const hasAll = requierdPermission.every((p) => permissionS.includes(p));
 
     if (!hasAll) {
-      throw new ForbiddenException('youuu');
+      throw new ForbiddenException('there is no pemission set for your id');
     }
 
     return true;

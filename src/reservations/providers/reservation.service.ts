@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   ConflictException,
+  ForbiddenException,
   Injectable,
   Logger,
   NotFoundException,
@@ -14,6 +15,7 @@ import { CreateReservationDto } from '../dtos/create-reservation.dto';
 import { ReservationStatus } from '../enums/reservation-status.enum';
 import { RoomService } from 'src/rooms/providers/room-service/room.service';
 import { Cron, CronExpression } from '@nestjs/schedule';
+import { PricingService } from 'src/rooms/providers/room-service/room-pricings.service';
 
 @Injectable()
 export class ReservationService {
@@ -25,6 +27,7 @@ export class ReservationService {
     @InjectRepository(Reservation)
     private reservaionRepository: Repository<Reservation>,
     private readonly roomService: RoomService,
+    private readonly pricingService: PricingService,
 
     private readonly redislockService: RedisLockService,
     private readonly redisService: RedisService,
@@ -32,14 +35,16 @@ export class ReservationService {
 
   async create(
     createReservationDto: CreateReservationDto,
+    userId: number,
   ): Promise<Reservation> {
     const {
       roomId,
       checkInDate,
       checkOutDate,
       guestName,
-      guestEmail,
       guestPhone,
+      numberOfGuests,
+      specialRequests,
     } = createReservationDto;
 
     if (new Date(checkInDate) >= new Date(checkOutDate)) {
@@ -51,6 +56,7 @@ export class ReservationService {
     return this.redislockService.withLock(
       lockKey,
       async () => {
+        this.logger.log(`Starting reservation for room ${roomId}`);
         const room = await this.roomService.findOneRoombyId(roomId);
         const isAvailable = await this.checkroomAvailibility(
           roomId,
@@ -62,15 +68,24 @@ export class ReservationService {
             'Room is not available for the selected dates',
           );
         }
-
+        const totalPrice = await this.pricingService.calculatePrice(
+          roomId,
+          checkInDate,
+          checkOutDate,
+        );
         const reservation = this.reservaionRepository.create({
           room,
+          userId: userId,
           checkInDate: new Date(checkInDate),
           checkOutDate: new Date(checkOutDate),
           guestName: guestName,
-          guestEmail: guestEmail,
+          // guestEmail: guestEmail,
           guestPhone: guestPhone,
+          numberOfGuests,
+          specialRequests,
           status: ReservationStatus.PENDING_PAYMENT,
+          totalPrice: totalPrice,
+          expiresAt: new Date(Date.now() + 60 * 60 * 1000), // 1 ساعت بعد
         });
         const saved = await this.reservaionRepository.save(reservation);
         await this.invalidateRoomCache(roomId);
@@ -149,11 +164,14 @@ export class ReservationService {
     const overlapping = await this.reservaionRepository
       .createQueryBuilder('reservation')
       .where('reservation.roomId = :roomId', { roomId })
-      .andWhere('reservation.status =: status', {
-        status: ReservationStatus.CONFIRMED,
+      .andWhere('reservation.status IN (:...statuses)', {
+        statuses: [
+          ReservationStatus.PENDING_PAYMENT,
+          ReservationStatus.CONFIRMED,
+        ],
       })
-      .andWhere('reservation.checkInDate < : checkOut', { checkOut })
-      .andWhere('reservation.checkOutDate >:checkIn', {
+      .andWhere('reservation.checkInDate < :checkOut', { checkOut })
+      .andWhere('reservation.checkOutDate > :checkIn', {
         checkIn,
       })
       .getOne();
@@ -178,13 +196,19 @@ export class ReservationService {
     return update;
   }
 
-  async cancelReservation(id: string): Promise<Reservation> {
+  async cancelReservation(id: string, userId: number): Promise<Reservation> {
     const reservation = await this.findReservationOrFail(id);
+    if (reservation.userId !== userId) {
+      throw new ForbiddenException(
+        'you ae not allowed to cancel this reservation',
+      );
+    }
     if (reservation.status === ReservationStatus.CANCELLED) {
       throw new BadRequestException('Reservation already cancelled');
     }
 
     reservation.status = ReservationStatus.CANCELLED;
+    reservation.cancelledAt = new Date();
     const update = await this.reservaionRepository.save(reservation);
     await this.invalidateReservationCache(id);
     await this.invalidateRoomCache(reservation.room.id);
@@ -199,9 +223,9 @@ export class ReservationService {
     const result = await this.reservaionRepository.update(
       {
         status: ReservationStatus.PENDING_PAYMENT,
-        createdAt: LessThan(new Date(now.getTime() - 60 * 60 * 1000)),
+        expiresAt: LessThan(now),
       },
-      { status: ReservationStatus.CANCELLED },
+      { status: ReservationStatus.CANCELLED, cancelledAt: now },
     );
     const affectedCount = result.affected ?? 0;
     if (affectedCount) {

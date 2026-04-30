@@ -26,6 +26,7 @@ import { ReservarionModule } from './reservations/reservarion.module';
 import { RedisModule } from './redis/redis.module';
 import redisConfig from './config/redis.config';
 import { BullModule } from '@nestjs/bull';
+import { ScheduleModule } from '@nestjs/schedule';
 const ENV = process.env.NODE_ENV;
 @Module({
   imports: [
@@ -37,6 +38,7 @@ const ENV = process.env.NODE_ENV;
       envFilePath: !ENV ? '.env' : `.env.${ENV}`,
       load: [appConfig, databaseConfig, redisConfig],
     }),
+    ScheduleModule.forRoot(),
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
       imports: [ConfigModule],

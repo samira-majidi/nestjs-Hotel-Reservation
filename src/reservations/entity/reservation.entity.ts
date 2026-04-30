@@ -10,6 +10,7 @@ import {
   Index,
 } from 'typeorm';
 import { ReservationStatus } from '../enums/reservation-status.enum';
+import { User } from 'src/users/user.entity';
 
 @Entity('reservations')
 //سیستم باید سریع چک کنه که ایا قبلا توی این تاریخ ها رزروی وجود داره
@@ -31,10 +32,10 @@ export class Reservation {
 
   @Column()
   guestName: string;
-
+  /*
   @Column()
   guestEmail: string;
-
+*/
   @Column({ nullable: true })
   guestPhone: string;
 
@@ -77,4 +78,11 @@ export class Reservation {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @ManyToOne(() => User, (user) => user.reservations, { nullable: true })
+  @JoinColumn({ name: 'userId' })
+  user: User;
+
+  @Column()
+  userId: number;
 }

@@ -24,7 +24,7 @@ import { OwnershipHandlerRegistry } from 'src/auth/authorization/ownership-handl
   ],
   controllers: [RoomsController, PricingRulesController],
   providers: [RoomService, PricingService, DailyPriceProcessor],
-  exports: [RoomService],
+  exports: [RoomService, PricingService],
 })
 export class RoomsModule implements OnModuleInit {
   constructor(

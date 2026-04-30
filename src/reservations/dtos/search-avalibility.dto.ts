@@ -1,21 +1,45 @@
-import { IsDateString, IsEnum, IsInt, IsOptional, Min } from 'class-validator';
-import { RoomType } from 'src/rooms/enums/room-type.enum';
+import {
+  IsString,
+  IsUUID,
+  IsDateString,
+  IsInt,
+  IsOptional,
+  Min,
+  MaxLength,
+  Matches,
+} from 'class-validator';
 
-export class SearchAvailabilityDto {
+export class CreateReservationDto {
+  @IsUUID()
+  roomId: string;
+
+  @IsInt()
+  @Min(1)
+  userId: number;
+
+  @IsString()
+  @MaxLength(100)
+  guestName: string;
+
+  @IsOptional()
+  @IsString()
+  @Matches(/^\+?[0-9\s-]{7,15}$/, {
+    message: 'your phone number is not valid',
+  })
+  guestPhone?: string;
+
   @IsDateString()
   checkInDate: string;
 
   @IsDateString()
   checkOutDate: string;
 
-  @IsEnum(RoomType)
-  @IsOptional()
-  roomType?: RoomType;
-
   @IsInt()
   @Min(1)
-  @IsOptional()
-  guests?: number;
-}
+  numberOfGuests: number;
 
-//یک جور فیتر برای پیدا کردن اتاق های موردنير براساس داده های کاربر
+  @IsOptional()
+  @IsString()
+  @MaxLength(500)
+  specialRequests?: string;
+}

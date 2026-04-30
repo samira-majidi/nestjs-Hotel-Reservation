@@ -1,7 +1,6 @@
 POST http://localhost:3000/pricing-rules/3d62ae37-9ddd-4c98-84b2-947d7d07652c
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQ5LCJlbWFpbCI6ImhhbWloZGdhZmdnc2RmQGdtYWlsLmNvbSIsInJvbGUiOiJob3N0IiwiaWF0IjoxNzc3MzA1MDcyLCJleHAiOjE3NzczMDg2NzIsImF1ZCI6ImxvY2FsaG9zdDozMDAwIiwiaXNzIjoibG9jYWxob3N0OjMwMDAifQ.pesbdWN00rjEWtydoPg90AD0vL9BzpRZ-Xe0nFfm6NE
-
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQ5LCJlbWFpbCI6ImhhbWloZGdhZmdnc2RmQGdtYWlsLmNvbSIsInJvbGUiOiJob3N0IiwiaWF0IjoxNzc3NTM0NjY3LCJleHAiOjE3Nzc1MzgyNjcsImF1ZCI6ImxvY2FsaG9zdDozMDAwIiwiaXNzIjoibG9jYWxob3N0OjMwMDAifQ.-PjtduBIdvNSaa216iefs186Z5GEXRCLO3yM3Zf8y8w
 {
   "startDate": "2026-05-01",
   "endDate": "2026-05-15",
