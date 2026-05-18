@@ -12,9 +12,9 @@ import {
 import { RoomStatus } from '../enums/room-status.enum';
 import { RoomType } from '../enums/room-type.enum';
 
-import { Reservation } from 'src/reservations/entity/reservation.entity';
+import { Reservation } from '#src/reservations/entity/reservation.entity';
 import { RoomPricing } from './room-pricing.entity';
-import { Hotel } from 'src/hotels/entities/hotel.entity';
+import { Hotel } from '#src/hotels/entities/hotel.entity';
 import { DailyPrice } from './daily-price.entity';
 
 @Entity('rooms')

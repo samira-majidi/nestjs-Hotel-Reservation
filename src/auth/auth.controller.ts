@@ -8,7 +8,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { AuthService } from './providers/auth.service';
-import { CreatUserDto } from 'src/users/dtos/creat-user.dto';
+import { CreatUserDto } from '#src/users/dtos/creat-user.dto';
 import { SignInDto } from './dto/sing-in.dto';
 import { Auth } from './decorators/auth.decorator';
 import { AuthType } from './enums/auth-type.enum';

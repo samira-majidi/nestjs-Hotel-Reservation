@@ -6,14 +6,14 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { PaginationDto } from 'src/common/dto/pagination.dto';
-import { PaginatedResponse } from 'src/common/interface/paginated-response.interface';
-import { createPaginatedResponse } from 'src/common/utill/pagination.util';
-import { HotelsService } from 'src/hotels/providers/hotels.service';
-import { RedisService } from 'src/redis/providers/redis.service';
-import { CreateRoomDto } from 'src/rooms/dtos/create-room.dto';
-import { UpdateRoomDto } from 'src/rooms/dtos/update-room.dto';
-import { Room } from 'src/rooms/entity/room.entity';
+import { PaginationDto } from '#src/common/dto/pagination.dto';
+import { PaginatedResponse } from '#src/common/interface/paginated-response.interface';
+import { createPaginatedResponse } from '#src/common/utill/pagination.util';
+import { HotelsService } from '#src/hotels/providers/hotels.service';
+import { RedisService } from '#src/redis/providers/redis.service';
+import { CreateRoomDto } from '#src/rooms/dtos/create-room.dto';
+import { UpdateRoomDto } from '#src/rooms/dtos/update-room.dto';
+import { Room } from '#src/rooms/entity/room.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()

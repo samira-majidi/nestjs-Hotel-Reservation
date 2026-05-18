@@ -1,7 +1,7 @@
 ### Create room
-POST http://localhost:3000/rooms/hotel/20
+POST http://localhost:3000/rooms/hotel/21
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQ5LCJlbWFpbCI6ImhhbWloZGdhZmdnc2RmQGdtYWlsLmNvbSIsInJvbGUiOiJob3N0IiwiaWF0IjoxNzc3NDU4NDgxLCJleHAiOjE3Nzc0NjIwODEsImF1ZCI6ImxvY2FsaG9zdDozMDAwIiwiaXNzIjoibG9jYWxob3N0OjMwMDAifQ.PU2pGBr5MqYpPPzDbZCYrS9FpfmsI3bOmCtOnRdJcgo
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQ5LCJlbWFpbCI6ImhhbWloZGdhZmdnc2RmQGdtYWlsLmNvbSIsInJvbGUiOiJob3N0IiwiaWF0IjoxNzc3NzI3MjQ4LCJleHAiOjE3Nzc3MzA4NDgsImF1ZCI6ImxvY2FsaG9zdDozMDAwIiwiaXNzIjoibG9jYWxob3N0OjMwMDAifQ.6aDkkjpVaS6iIHu1Y6ygt9jmSEGbDgrQehkUyoQho5o
 {
   "roomNumber":"47",
   "type": "SINGLE",

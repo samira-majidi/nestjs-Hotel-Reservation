@@ -1,0 +1,9 @@
+
+POST http://localhost:8080/uploads/file
+Authorization: Beare -YOUR_TOKEN
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="screenshot.png"
+Content-Type: image/png
+
+< C:/Users/ADMIN/hotel-booking/backend/hotel-booking-intro/src/common/upload/https/Screenshot 2026-05-16 210027.png
+------WebKitFormBoundary7MA4YWxkTrZu0gW--

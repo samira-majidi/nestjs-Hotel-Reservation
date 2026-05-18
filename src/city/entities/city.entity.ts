@@ -1,4 +1,4 @@
-import { Hotel } from 'src/hotels/entities/hotel.entity';
+import { Hotel } from '#src/hotels/entities/hotel.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()

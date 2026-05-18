@@ -2,7 +2,7 @@ PATCH  http://localhost:3000/hotels/16
 Authorization: Bearer Patchhttp://localhost:4000/hotels
 accept-encoding: gzip, deflate, br
 accept: */*
-authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQ5LCJlbWFpbCI6ImhhbWloZGdhZmdnc2RmQGdtYWlsLmNvbSIsInJvbGUiOiJob3N0IiwiaWF0IjoxNzc3MzAwMzY0LCJleHAiOjE3NzczMDM5NjQsImF1ZCI6ImxvY2FsaG9zdDozMDAwIiwiaXNzIjoibG9jYWxob3N0OjMwMDAifQ.DdRm0lFA22x2b2fVGKxqqcxHIoxHVOXfhFh6huhu8Oo
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQ5LCJlbWFpbCI6ImhhbWloZGdhZmdnc2RmQGdtYWlsLmNvbSIsInJvbGUiOiJob3N0IiwiaWF0IjoxNzc5MDA3NDk0LCJleHAiOjE3NzkwMTEwOTQsImF1ZCI6ImxvY2FsaG9zdDo1MDAwIiwiaXNzIjoibG9jYWxob3N0OjUwMDAifQ.0dNiHFS5wKrxc3jcKYBVJzJJeC3pch8irj6Z4C2FLWg
 Content-Type: application/json
 {
   "name": "Grand Palace dsd Hotel",

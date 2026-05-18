@@ -4,7 +4,7 @@ import * as config from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import jwtConfig from '../config/jwt-config';
 import { GenerateTokenProviders } from './generate-token.providers';
-import { UserService } from 'src/users/providers/user-service';
+import { UserService } from '#src/users/providers/user-service';
 import { ActiveUserData } from '../interfaces/active-user.interface';
 
 @Injectable()

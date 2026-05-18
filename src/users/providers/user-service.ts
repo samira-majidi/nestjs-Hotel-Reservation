@@ -9,7 +9,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
 import { CreateUserProvider } from './create-user.provider';
 import { CreatUserDto } from '../dtos/creat-user.dto';
-import { UserRole } from 'src/common/enum/user-role.enum';
+import { UserRole } from '#src/common/enum/user-role.enum';
 
 @Injectable()
 export class UserService {

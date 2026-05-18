@@ -6,16 +6,16 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { RedisLockService } from 'src/redis/providers/redis-lock.service';
-import { RedisService } from 'src/redis/providers/redis.service';
+import { RedisLockService } from '#src/redis/providers/redis-lock.service';
+import { RedisService } from '#src/redis/providers/redis.service';
 import { LessThan, Repository } from 'typeorm';
 import { Reservation } from '../entity/reservation.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateReservationDto } from '../dtos/create-reservation.dto';
 import { ReservationStatus } from '../enums/reservation-status.enum';
-import { RoomService } from 'src/rooms/providers/room-service/room.service';
+import { RoomService } from '#src/rooms/providers/room-service/room.service';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { PricingService } from 'src/rooms/providers/room-service/room-pricings.service';
+import { PricingService } from '#src/rooms/providers/room-service/room-pricings.service';
 
 @Injectable()
 export class ReservationService {
@@ -47,7 +47,7 @@ export class ReservationService {
       specialRequests,
     } = createReservationDto;
 
-    if (new Date(checkInDate) >= new Date(checkOutDate)) {
+    if (new Date(checkOutDate) <= new Date(checkInDate)) {
       throw new BadRequestException(
         'Check-out date must be after check-in date',
       );
@@ -132,17 +132,17 @@ export class ReservationService {
     return reservation;
   }
 
-  private async invalidateReservationCache(id: string) {
+  async invalidateReservationCache(id: string) {
     await this.redisService.del(`reservation:${id}`);
   }
-  private async invalidateAllReservationCache() {
+  async invalidateAllReservationCache() {
     await this.redisService.del('reservation:all');
   }
-  private async invalidateRoomCache(roomId: string) {
+  async invalidateRoomCache(roomId: string) {
     await this.redisService.del(`room:${roomId}`);
     await this.invalidateAllReservationCache();
   }
-  private async findReservationOrFail(id: string): Promise<Reservation> {
+  async findReservationOrFail(id: string): Promise<Reservation> {
     const reservation = await this.reservaionRepository.findOne({
       where: { id },
       relations: ['room'],
@@ -236,26 +236,3 @@ export class ReservationService {
     }
   }
 }
-
-/**bulk update
-await repository.update(
-  criteria,    // ← شرط‌ها (WHERE)
-  partialEntity // ← تغییرات (SET)
-);
-
- * loop+save
- * async cancelExpiredReservations() {
-  const expired = await this.reservationRepo.find({
-    where: {
-      status: ReservationStatus.PENDING,
-      expiresAt: LessThan(new Date()),
-    },
-  });
-
-  // ❌ 
-  for (const reservation of expired) {
-    reservation.status = ReservationStatus.CANCELLED;
-    await this.reservationRepo.save(reservation); // ← کوئری جداگانه
-  }
-}
- */

@@ -10,7 +10,7 @@ import { Observable } from 'rxjs';
 import { Permission } from '../enums/permission.enum';
 import { PERMISSIONS_KEY } from '../constants/permission-constant';
 import { Request } from 'express';
-import { REQUEST_USER_KEY } from 'src/auth/constants/auth-constant';
+import { REQUEST_USER_KEY } from '#src/auth/constants/auth-constant';
 import { Role } from '../enums/role.enum';
 import { RolePermissions } from '../mapping/role-permission.map';
 

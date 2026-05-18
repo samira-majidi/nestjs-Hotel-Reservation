@@ -27,6 +27,7 @@ import { RedisModule } from './redis/redis.module';
 import redisConfig from './config/redis.config';
 import { BullModule } from '@nestjs/bull';
 import { ScheduleModule } from '@nestjs/schedule';
+import { UploadModule } from './common/upload/upload.module';
 const ENV = process.env.NODE_ENV;
 @Module({
   imports: [
@@ -70,6 +71,7 @@ const ENV = process.env.NODE_ENV;
     RoomsModule,
     ReservarionModule,
     RedisModule,
+    UploadModule,
   ],
   controllers: [AppController],
   providers: [

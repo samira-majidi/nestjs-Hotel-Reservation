@@ -1,11 +1,14 @@
-import { City } from 'src/city/entities/city.entity';
-import { Room } from 'src/rooms/entity/room.entity';
-import { User } from 'src/users/user.entity';
+import { Upload } from '#src/common/upload/entity/upload.entity';
+import { City } from '#src/city/entities/city.entity';
+import { Room } from '#src/rooms/entity/room.entity';
+import { User } from '#src/users/user.entity';
 import {
   Column,
   Entity,
   Index,
   JoinColumn,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -44,4 +47,12 @@ export class Hotel {
 
   @OneToMany(() => Room, (room) => room.hotel)
   rooms: Room[];
+
+  @ManyToMany(() => Upload)
+  @JoinTable({
+    name: 'hotel_gallery',
+    joinColumn: { name: 'hotelId' },
+    inverseJoinColumn: { name: 'fileId' },
+  })
+  galleryImages: Upload[];
 }

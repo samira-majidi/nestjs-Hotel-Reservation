@@ -4,5 +4,6 @@ export enum ReservationStatus {
   CHECKED_IN = 'CHECKED_IN', // چک‌این شده
   CHECKED_OUT = 'CHECKED_OUT', // چک‌اوت شده
   CANCELLED = 'CANCELLED', // لغو شده
-  EXPIRED = 'EXPIRED', // منقضی شده (پرداخت نشده)
+  EXPIRED = 'EXPIRED',
+  PENDING = "PENDING", // منقضی شده (پرداخت نشده)
 }

@@ -1,8 +1,8 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { UserRole } from '../common/enum/user-role.enum';
-import { Hotel } from 'src/hotels/entities/hotel.entity';
+import { Hotel } from '#src/hotels/entities/hotel.entity';
 import { Exclude } from 'class-transformer';
-import { Reservation } from 'src/reservations/entity/reservation.entity';
+import { Reservation } from '#src/reservations/entity/reservation.entity';
 
 @Entity()
 export class User {

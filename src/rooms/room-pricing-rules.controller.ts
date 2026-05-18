@@ -16,9 +16,9 @@ import { UpdateRoomPricingDto } from './dtos/update-room-pricing.dto';
 import { PricingService } from './providers/room-service/room-pricings.service';
 import bull from 'bull';
 import { ApiOperation, ApiParam } from '@nestjs/swagger';
-import { CheckOwnership } from 'src/auth/authorization/ownership.decorator';
-import { OwnershipGuard } from 'src/auth/authorization/ownership.guard';
-import { PermissionGuard } from 'src/rbac/guards/permission.guard';
+import { CheckOwnership } from '#src/auth/authorization/ownership.decorator';
+import { OwnershipGuard } from '#src/auth/authorization/ownership.guard';
+import { PermissionGuard } from '#src/rbac/guards/permission.guard';
 
 @Controller('pricing-rules')
 export class PricingRulesController {

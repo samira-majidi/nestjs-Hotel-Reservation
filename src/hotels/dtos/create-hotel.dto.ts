@@ -5,6 +5,7 @@ import {
   IsArray,
   MaxLength,
   MinLength,
+  IsOptional,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
@@ -41,6 +42,16 @@ export class CreateHotelDto {
   @MinLength(5)
   @MaxLength(256)
   address: string;
+  @ApiProperty({
+    example: '+98 21 1234 5678',
+    description: 'Contact phone number',
+    required: false,
+    maxLength: 20,
+  })
+  @IsString()
+  @IsOptional()
+  @MaxLength(20)
+  phone?: string;
 
   @ApiProperty({
     description: 'Description of the hotel',
@@ -58,4 +69,15 @@ export class CreateHotelDto {
   @IsString({ each: true })
   @Type(() => String)
   amenities: string[];
+
+  @ApiProperty({
+    description: 'Array of uploaded file IDs for hotel gallery',
+    example: [1, 2, 3],
+    type: [Number],
+  })
+  @IsArray()
+  @IsInt({ each: true })
+  @Type(() => Number)
+  @IsNotEmpty()
+  imageIds: number[];
 }

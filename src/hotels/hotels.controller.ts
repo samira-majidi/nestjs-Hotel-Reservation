@@ -18,18 +18,18 @@ import {
   ApiQuery,
   ApiResponse,
 } from '@nestjs/swagger';
-import { ActiveUser } from 'src/auth/decorators/active-user.decorator';
-import { CheckOwnership } from 'src/auth/authorization/ownership.decorator';
-import { OwnershipGuard } from 'src/auth/authorization/ownership.guard';
-import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { ActiveUser } from '#src/auth/decorators/active-user.decorator';
+import { CheckOwnership } from '#src/auth/authorization/ownership.decorator';
+import { OwnershipGuard } from '#src/auth/authorization/ownership.guard';
+import { PaginationDto } from '#src/common/dto/pagination.dto';
 import { HotelsService } from './providers/hotels.service';
-import { AuthType } from 'src/auth/enums/auth-type.enum';
-import { Auth } from 'src/auth/decorators/auth.decorator';
+import { AuthType } from '#src/auth/enums/auth-type.enum';
+import { Auth } from '#src/auth/decorators/auth.decorator';
 import { UpdateHotelDto } from './dtos/update-hotel.dto';
 import { CreateHotelDto } from './dtos/create-hotel.dto';
-import { PermissionGuard } from 'src/rbac/guards/permission.guard';
-import { Permissions } from 'src/rbac/decorators/permissions.decorator';
-import { Permission } from 'src/rbac/enums/permission.enum';
+import { PermissionGuard } from '#src/rbac/guards/permission.guard';
+import { Permissions } from '#src/rbac/decorators/permissions.decorator';
+import { Permission } from '#src/rbac/enums/permission.enum';
 
 @ApiTags('Hotels')
 @Controller('hotels')
@@ -46,6 +46,7 @@ export class HotelsController {
   @ApiQuery({ name: 'limit', required: false, example: 10 })
   @ApiResponse({ status: 200, description: 'Hotels retrieved successfully' })
   findAll(@Query() paginationDto: PaginationDto) {
+    console.log(CreateHotelDto);
     return this.hotelsService.findAllHotel(paginationDto);
   }
 

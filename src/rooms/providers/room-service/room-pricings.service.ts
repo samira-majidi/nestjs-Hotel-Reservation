@@ -4,12 +4,12 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { RoomPricing } from 'src/rooms/entity/room-pricing.entity';
+import { RoomPricing } from '#src/rooms/entity/room-pricing.entity';
 import { Repository } from 'typeorm';
 import { RoomService } from './room.service';
-import { CreateRoomPricingDto } from 'src/rooms/dtos/pricing-room.dto';
-import { UpdateRoomPricingDto } from 'src/rooms/dtos/update-room-pricing.dto';
-import { DailyPrice } from 'src/rooms/entity/daily-price.entity';
+import { CreateRoomPricingDto } from '#src/rooms/dtos/pricing-room.dto';
+import { UpdateRoomPricingDto } from '#src/rooms/dtos/update-room-pricing.dto';
+import { DailyPrice } from '#src/rooms/entity/daily-price.entity';
 
 @Injectable()
 export class PricingService {

@@ -10,7 +10,7 @@ import {
   Index,
 } from 'typeorm';
 import { ReservationStatus } from '../enums/reservation-status.enum';
-import { User } from 'src/users/user.entity';
+import { User } from '#src/users/user.entity';
 
 @Entity('reservations')
 //سیستم باید سریع چک کنه که ایا قبلا توی این تاریخ ها رزروی وجود داره

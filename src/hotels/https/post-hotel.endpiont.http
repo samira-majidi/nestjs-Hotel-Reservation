@@ -1,18 +1,13 @@
-POST  http://localhost:3000/hotels
-Authorization: Bearer POST http://localhost:4000/hotels
-accept-encoding: gzip, deflate, br
-accept: */*
-authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQ5LCJlbWFpbCI6ImhhbWloZGdhZmdnc2RmQGdtYWlsLmNvbSIsInJvbGUiOiJob3N0IiwiaWF0IjoxNzc3MjM1ODQxLCJleHAiOjE3NzcyMzk0NDEsImF1ZCI6ImxvY2FsaG9zdDozMDAwIiwiaXNzIjoibG9jYWxob3N0OjMwMDAifQ.e1tgb61YrHpNRcpgaAl2BPtZW9mxjXBxXUNys7vaLVA
+POST http://localhost:8080/hotels
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQ5LCJlbWFpbCI6ImhhbWloZGdhZmdnc2RmQGdtYWlsLmNvbSIsInJvbGUiOiJob3N0IiwiaWF0IjoxNzc5MDg3MzYwLCJleHAiOjE3NzkwOTA5NjAsImF1ZCI6ImxvY2FsaG9zdDo1MDAwIiwiaXNzIjoibG9jYWxob3N0OjUwMDAifQ.cr2U8n0Bn8xfNgfg1-1Z8_JMgVH06FP5Wr0OShMXXKY
 Content-Type: application/json
+
 {
-  "name": "Grand Palace dsd Hotel",
+  "name": "Grandtel",
   "cityId": 1,
-  "address": "Boulevard, Dubai لاالال",
-  "description": "Luxury hotel with sea view rooms",
-  "amenities": [
-    "wifi",
-    "pool",
-  
-    "airport shuttle"
-  ]
+  "phone": "+971-4-123-4567",
+  "address": "Sheikh Zayed Road, Dubai",
+  "description": "Luxury 5-star hotel with stunning sea views and world-class amenities",
+  "amenities": ["wifi", "pool", "gym", "spa", "restaurant", "airport shuttle"],
+  "imageIds": [7]
 }

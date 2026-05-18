@@ -2,7 +2,7 @@ import { Body, Controller, Param, Patch, Post } from '@nestjs/common';
 import { ReservationService } from './providers/reservation.service';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { CreateReservationDto } from './dtos/create-reservation.dto';
-import { ActiveUser } from 'src/auth/decorators/active-user.decorator';
+import { ActiveUser } from '#src/auth/decorators/active-user.decorator';
 
 @ApiTags('Reservations')
 @Controller('reservations')

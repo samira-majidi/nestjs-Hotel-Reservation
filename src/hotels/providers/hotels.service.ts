@@ -1,7 +1,8 @@
+// src/hotel/providers/hotels.service.ts
 import { Hotel } from '../entities/hotel.entity';
 import { Repository } from 'typeorm';
 import { CreateHotelDto } from '../dtos/create-hotel.dto';
-import { City } from 'src/city/entities/city.entity';
+import { City } from '#src/city/entities/city.entity';
 import {
   ForbiddenException,
   Injectable,
@@ -9,19 +10,23 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { PaginationDto } from 'src/common/dto/pagination.dto';
-import { PaginatedResponse } from 'src/common/interface/paginated-response.interface';
-import { RedisService } from 'src/redis/providers/redis.service';
-import { createPaginatedResponse } from 'src/common/utill/pagination.util';
+import { PaginationDto } from '#src/common/dto/pagination.dto';
+import { PaginatedResponse } from '#src/common/interface/paginated-response.interface';
+import { RedisService } from '#src/redis/providers/redis.service';
+import { createPaginatedResponse } from '#src/common/utill/pagination.util';
 import { UpdateHotelDto } from '../dtos/update-hotel.dto';
+import { GalleryManagerService } from '#src/common/upload/providers/gallery-manager.service';
+import { Upload } from '#src/common/upload/entity/upload.entity';
 
 @Injectable()
 export class HotelsService {
   private readonly logger = new Logger(HotelsService.name);
   private readonly CACHE_TTL = 300;
+  private readonly MAX_GALLERY_IMAGES = 20;
 
   constructor(
     private readonly redisService: RedisService,
+    private readonly galleryManager: GalleryManagerService,
 
     @InjectRepository(Hotel)
     private readonly hotelRepository: Repository<Hotel>,
@@ -52,8 +57,9 @@ export class HotelsService {
       this.logger.debug('cache hit : all hotel');
       return cached;
     }
+
     const [data, total] = await this.hotelRepository.findAndCount({
-      relations: ['owner', 'city'],
+      relations: ['owner', 'city', 'galleryImages'],
       skip,
       take: limit,
     });
@@ -65,6 +71,8 @@ export class HotelsService {
   }
 
   public async createHotel(createHotelDto: CreateHotelDto, userId: number) {
+    const { imageIds, ...hotelData } = createHotelDto;
+
     const cityExists = await this.cityRepository.existsBy({
       id: createHotelDto.cityId,
     });
@@ -75,15 +83,32 @@ export class HotelsService {
       );
     }
 
-    const hotel = this.hotelRepository.create({
-      ...createHotelDto,
-      ownerId: userId,
-    });
+    return await this.hotelRepository.manager.transaction(async (manager) => {
+      let galleryImages: Upload[] = [];
 
-    const savedHotel = await this.hotelRepository.save(hotel);
-    this.logger.log(`Hotel created: ${savedHotel.id}`);
-    await this.invalidateHotelCache();
-    return savedHotel;
+      if (imageIds && imageIds.length > 0) {
+        galleryImages = await this.galleryManager.attachGallery(
+          imageIds,
+          userId,
+          {
+            maxImages: this.MAX_GALLERY_IMAGES,
+            entityName: 'Hotel',
+          },
+          manager,
+        );
+      }
+
+      const hotel = this.hotelRepository.create({
+        ...hotelData,
+        ownerId: userId,
+        galleryImages,
+      });
+
+      const savedHotel = await manager.save(hotel);
+      await this.invalidateHotelCache();
+      this.logger.log(`Hotel created: ${savedHotel.id}`);
+      return savedHotel;
+    });
   }
 
   async findHotelById(hotelId: number): Promise<Hotel> {
@@ -97,12 +122,12 @@ export class HotelsService {
 
     const hotel = await this.hotelRepository.findOne({
       where: { id: hotelId },
-      relations: ['owner', 'city', 'rooms'],
+      relations: ['owner', 'city', 'rooms', 'galleryImages'],
     });
+
     if (!hotel) {
       throw new NotFoundException(`Hotel with id ${hotelId} not found`);
     }
-    console.log('🔍 Hotel found:', hotel);
 
     await this.redisService.set(cacheKey, hotel, this.CACHE_TTL);
     this.logger.log(`Hotel with id ${hotelId} found`);
@@ -120,14 +145,45 @@ export class HotelsService {
     if (hotel.ownerId !== userId) {
       throw new ForbiddenException('شما صاحب هتل نیستید');
     }
-    const updateHotelData = await this.hotelRepository.save({
+
+    const { imageIds, ...hotelData } = updatehotelDto;
+
+    if (imageIds) {
+      return await this.hotelRepository.manager.transaction(async (manager) => {
+        const newGallery = await this.galleryManager.replaceGallery(
+          hotel.galleryImages || [],
+          imageIds,
+          userId,
+          {
+            maxImages: this.MAX_GALLERY_IMAGES,
+            entityName: 'Hotel',
+          },
+          manager,
+        );
+
+        const updatedHotel = await manager.save(Hotel, {
+          ...hotel,
+          ...hotelData,
+          galleryImages: newGallery,
+        });
+
+        await this.invalidateHotelCache();
+        this.logger.log(`Hotel with id ${hotelId} updated`);
+        return updatedHotel;
+      });
+    }
+
+    // اگه فایل جدیدی نداریم، فقط بقیه فیلدها رو آپدیت کن
+    const updatedHotel = await this.hotelRepository.save({
       ...hotel,
-      ...updatehotelDto,
+      ...hotelData,
     });
+
     await this.invalidateHotelCache();
-    this.logger.log(`hotel with id ${hotelId} update`);
-    return updateHotelData;
+    this.logger.log(`Hotel with id ${hotelId} updated`);
+    return updatedHotel;
   }
+
   public async deleteHotel(hotelId: number, userId: number) {
     const hotel = await this.findHotelById(hotelId);
 
@@ -135,8 +191,8 @@ export class HotelsService {
       throw new ForbiddenException('شما صاحب هتل نیستید');
     }
 
+    await this.galleryManager.releaseImages(hotel.galleryImages);
     await this.hotelRepository.delete(hotelId);
-
     await this.invalidateHotelCache();
 
     this.logger.log(`Hotel with id ${hotelId} deleted`);

@@ -3,7 +3,7 @@ import * as config from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import jwtConfig from '../config/jwt-config';
 import { JwtPayload } from '../types/jwt-payload.type';
-import { User } from 'src/users/user.entity';
+import { User } from '#src/users/user.entity';
 import { ActiveUserData } from '../interfaces/active-user.interface';
 
 @Injectable()

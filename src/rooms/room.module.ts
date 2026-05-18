@@ -8,10 +8,10 @@ import { DailyPrice } from './entity/daily-price.entity';
 import { BullModule } from '@nestjs/bull';
 import { PricingService } from './providers/room-service/room-pricings.service';
 import { DailyPriceProcessor } from './processors/daily-price.processor';
-import { HotelsModule } from 'src/hotels/hotels.module';
-import { OwnershipModule } from 'src/auth/authorization/ownership.module';
+import { HotelsModule } from '#src/hotels/hotels.module';
+import { OwnershipModule } from '#src/auth/authorization/ownership.module';
 import { PricingRulesController } from './room-pricing-rules.controller';
-import { OwnershipHandlerRegistry } from 'src/auth/authorization/ownership-handler.registry';
+import { OwnershipHandlerRegistry } from '#src/auth/authorization/ownership-handler.registry';
 
 @Module({
   imports: [

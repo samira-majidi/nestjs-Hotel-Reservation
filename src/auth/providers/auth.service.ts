@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { UserRole } from 'src/common/enum/user-role.enum';
-import { CreatUserDto } from 'src/users/dtos/creat-user.dto';
-import { UserService } from 'src/users/providers/user-service';
+import { UserRole } from '#src/common/enum/user-role.enum';
+import { CreatUserDto } from '#src/users/dtos/creat-user.dto';
+import { UserService } from '#src/users/providers/user-service';
 import { SignInDto } from '../dto/sing-in.dto';
 import { SignInProvider } from './sing-in.provider';
 @Injectable()

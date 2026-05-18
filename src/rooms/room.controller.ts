@@ -17,15 +17,15 @@ import {
   ApiQuery,
   ApiResponse,
 } from '@nestjs/swagger';
-import { ActiveUser } from 'src/auth/decorators/active-user.decorator';
-import { CheckOwnership } from 'src/auth/authorization/ownership.decorator';
-import { OwnershipGuard } from 'src/auth/authorization/ownership.guard';
-import { PaginationDto } from 'src/common/dto/pagination.dto';
-import { AuthType } from 'src/auth/enums/auth-type.enum';
-import { Auth } from 'src/auth/decorators/auth.decorator';
-import { PermissionGuard } from 'src/rbac/guards/permission.guard';
-import { Permissions } from 'src/rbac/decorators/permissions.decorator';
-import { Permission } from 'src/rbac/enums/permission.enum';
+import { ActiveUser } from '#src/auth/decorators/active-user.decorator';
+import { CheckOwnership } from '#src/auth/authorization/ownership.decorator';
+import { OwnershipGuard } from '#src/auth/authorization/ownership.guard';
+import { PaginationDto } from '#src/common/dto/pagination.dto';
+import { AuthType } from '#src/auth/enums/auth-type.enum';
+import { Auth } from '#src/auth/decorators/auth.decorator';
+import { PermissionGuard } from '#src/rbac/guards/permission.guard';
+import { Permissions } from '#src/rbac/decorators/permissions.decorator';
+import { Permission } from '#src/rbac/enums/permission.enum';
 import { RoomService } from './providers/room-service/room.service';
 import { CreateRoomDto } from './dtos/create-room.dto';
 import { UpdateRoomDto } from './dtos/update-room.dto';

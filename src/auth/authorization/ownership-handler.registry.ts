@@ -23,7 +23,7 @@ export class OwnershipHandlerRegistry {
   }
 }
 
-/*import { Hotel } from 'src/hotels/entities/hotel.entity';
+/*import { Hotel } from '#src/hotels/entities/hotel.entity';
 
 export interface OwnershipConfig {
   model: new () => any;

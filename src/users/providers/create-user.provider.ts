@@ -1,9 +1,9 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { CreatUserDto } from '../dtos/creat-user.dto';
 import { User } from '../user.entity';
-import { UserRole } from 'src/common/enum/user-role.enum';
+import { UserRole } from '#src/common/enum/user-role.enum';
 import { Repository } from 'typeorm';
-import { HashingProvider } from 'src/auth/providers/hashing.provider';
+import { HashingProvider } from '#src/auth/providers/hashing.provider';
 import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
