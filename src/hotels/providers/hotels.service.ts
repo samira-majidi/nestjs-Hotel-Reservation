@@ -59,7 +59,7 @@ export class HotelsService {
     }
 
     const [data, total] = await this.hotelRepository.findAndCount({
-      relations: ['owner', 'city', 'galleryImages'],
+      relations: ['owner', 'city', 'galleryImages', 'amenities'],
       skip,
       take: limit,
     });
@@ -71,7 +71,7 @@ export class HotelsService {
   }
 
   public async createHotel(createHotelDto: CreateHotelDto, userId: number) {
-    const { imageIds, ...hotelData } = createHotelDto;
+    const { imageIds, amenityIds, ...hotelData } = createHotelDto;
 
     const cityExists = await this.cityRepository.existsBy({
       id: createHotelDto.cityId,
@@ -97,11 +97,13 @@ export class HotelsService {
           manager,
         );
       }
+      const amenities = amenityIds?.map((id) => ({ id })) || [];
 
       const hotel = this.hotelRepository.create({
         ...hotelData,
         ownerId: userId,
         galleryImages,
+        amenities,
       });
 
       const savedHotel = await manager.save(hotel);
@@ -134,6 +136,44 @@ export class HotelsService {
 
     return hotel;
   }
+  public async findHotelsByCityId(
+    cityId: number,
+    paginationDto: PaginationDto,
+  ): Promise<PaginatedResponse<Hotel>> {
+    const page = paginationDto.page ?? 1;
+    const limit = paginationDto.limit ?? 10;
+    const skip = (page - 1) * limit;
+
+    // یک کلید کش اختصاصی برای هر شهر و هر صفحه
+    const cacheKey = `hotel:city:${cityId}:page:${page}:limit:${limit}`;
+
+    const cached =
+      await this.redisService.get<PaginatedResponse<Hotel>>(cacheKey);
+
+    if (cached) {
+      this.logger.debug(`Cache hit: hotels for city ${cityId}`);
+      return cached;
+    }
+
+    // اول چک می‌کنیم که اصلا این شهر وجود داره یا نه
+    const cityExists = await this.cityRepository.existsBy({ id: cityId });
+    if (!cityExists) {
+      throw new NotFoundException(`City with id ${cityId} not found`);
+    }
+
+    const [data, total] = await this.hotelRepository.findAndCount({
+      where: { city: { id: cityId } }, // فیلتر بر اساس آیدی شهر
+      relations: ['owner', 'city', 'galleryImages'],
+      skip,
+      take: limit,
+    });
+
+    const response = createPaginatedResponse(data, total, page, limit);
+    await this.redisService.set(cacheKey, response, this.CACHE_TTL);
+    this.logger.debug(`Cached data for key: ${cacheKey}`);
+
+    return response;
+  }
 
   async updateHotel(
     updatehotelDto: UpdateHotelDto,
@@ -146,8 +186,10 @@ export class HotelsService {
       throw new ForbiddenException('شما صاحب هتل نیستید');
     }
 
-    const { imageIds, ...hotelData } = updatehotelDto;
-
+    const { imageIds, amenityIds, ...hotelData } = updatehotelDto;
+    const amenities = amenityIds
+      ? amenityIds.map((id) => ({ id }))
+      : hotel.amenities;
     if (imageIds) {
       return await this.hotelRepository.manager.transaction(async (manager) => {
         const newGallery = await this.galleryManager.replaceGallery(
@@ -165,6 +207,7 @@ export class HotelsService {
           ...hotel,
           ...hotelData,
           galleryImages: newGallery,
+          amenities,
         });
 
         await this.invalidateHotelCache();
@@ -200,7 +243,12 @@ export class HotelsService {
 
   private async invalidateHotelCache(): Promise<void> {
     try {
-      const keys = await this.redisService.keys('hotel:all:*');
+      // پیدا کردن کلیدهای مربوط به همه هتل‌ها و هتل‌های بر اساس شهر
+      const allHotelKeys = await this.redisService.keys('hotel:all:*');
+      const cityHotelKeys = await this.redisService.keys('hotel:city:*');
+
+      const keys = [...allHotelKeys, ...cityHotelKeys];
+
       if (keys.length > 0) {
         await Promise.all(keys.map((key) => this.redisService.del(key)));
         this.logger.log(`Invalidated ${keys.length} cache keys`);

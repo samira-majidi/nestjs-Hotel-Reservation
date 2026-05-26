@@ -1,13 +1,13 @@
 ### Create room
-POST http://localhost:3000/rooms/hotel/21
+POST http://localhost:8080/rooms/hotel/35
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQ5LCJlbWFpbCI6ImhhbWloZGdhZmdnc2RmQGdtYWlsLmNvbSIsInJvbGUiOiJob3N0IiwiaWF0IjoxNzc3NzI3MjQ4LCJleHAiOjE3Nzc3MzA4NDgsImF1ZCI6ImxvY2FsaG9zdDozMDAwIiwiaXNzIjoibG9jYWxob3N0OjMwMDAifQ.6aDkkjpVaS6iIHu1Y6ygt9jmSEGbDgrQehkUyoQho5o
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjU5LCJlbWFpbCI6InNhbWlyYW1hamlkaUBnbWFpbC5jb20iLCJyb2xlIjoiaG9zdCIsImlhdCI6MTc3OTY0MTgyOSwiZXhwIjoxNzc5NjQ1NDI5LCJhdWQiOiJsb2NhbGhvc3Q6NTAwMCIsImlzcyI6ImxvY2FsaG9zdDo1MDAwIn0.NxwMttbafDb-IKx3OxA0tockWgrcjlzJK-y09ryd4ZI
 {
   "roomNumber":"47",
   "type": "SINGLE",
   "basePrice": 120,
   "capacity": 2,
   "floor": 1,
-  "amenities": ["wifi", "tv", "air_conditioner"]
+  "imageIds":[120]
 }
 

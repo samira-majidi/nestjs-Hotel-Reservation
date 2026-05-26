@@ -1,8 +1,8 @@
 import { Body, Controller, Get, Post, Query } from '@nestjs/common';
-import { AmenityService } from './amenity.service';
+import { AmenityService } from './providers/amenity.service';
 import { AmenityType } from './type/amenity-type.enum';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { Amenity } from './amenity.entity';
+import { Amenity } from './entity/amenity.entity';
 import { FindAmenityByIdsDto } from './dto/findamenitybyid.dto';
 
 @Controller('amenity')

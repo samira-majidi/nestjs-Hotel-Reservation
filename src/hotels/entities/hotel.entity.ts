@@ -13,12 +13,13 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { Amenity } from '#src/amenity/entity/amenity.entity';
 @Entity()
 @Index(['id'])
 export class Hotel {
   @PrimaryGeneratedColumn()
   id: number;
-  @Column({ type: 'varchar', length: 512, nullable: false })
+  @Column({ type: 'varchar', length: 128, nullable: false })
   name: string;
 
   @ManyToOne(() => City, (city) => city.hotels)
@@ -31,13 +32,20 @@ export class Hotel {
   @Column({ type: 'varchar', length: 255, nullable: true })
   phone: string;
 
-  @Column({ type: 'varchar', nullable: false })
+  @Column({ type: 'varchar', length: 255, nullable: false }) // دقیقاً ۲۵۵ کاراکتر
   address: string;
+  @Column({ type: 'int', default: 1 }) // اضافه شدن فیلد ستاره با پیش‌فرض ۱
+  stars: number;
   @Column({ type: 'text', nullable: false })
   description: string;
 
-  @Column({ type: 'json' })
-  amenities: string[];
+  @ManyToMany(() => Amenity)
+  @JoinTable({
+    name: 'hotel_amenities',
+    joinColumn: { name: 'hotelId' },
+    inverseJoinColumn: { name: 'amenityId' },
+  })
+  amenities: Amenity[];
 
   @ManyToOne(() => User, (user) => user.hotel)
   @JoinColumn({ name: 'ownerId' })

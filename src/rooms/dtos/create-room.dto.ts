@@ -18,7 +18,7 @@ export class CreateRoomDto {
   @IsEnum(RoomType)
   type: RoomType;
 
-  @IsNumber({ maxDecimalPlaces: 2 }) //حداکثر دو رقم اعشار
+  @IsNumber({ maxDecimalPlaces: 2 }) // حداکثر دو رقم اعشار
   @Min(0)
   basePrice: number;
 
@@ -30,8 +30,9 @@ export class CreateRoomDto {
   @IsOptional()
   floor?: number;
 
+  // فیلد جدید برای دریافت آیدی عکس‌های گالری
   @IsArray()
-  @IsString({ each: true })
+  @IsInt({ each: true })
   @IsOptional()
-  amenities?: string[];
+  imageIds?: number[];
 }

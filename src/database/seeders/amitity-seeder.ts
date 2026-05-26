@@ -1,6 +1,8 @@
-import { AmenityType } from '../type/amenity-type.enum';
+import { DataSource } from 'typeorm';
+import { Amenity } from '#src/amenity/entity/amenity.entity';
+import { AmenityType } from '#src/amenity/type/amenity-type.enum';
 
-export const AMENITY_SEED_DATA = [
+const AMENITY_SEED_DATA = [
   // Sport
   {
     name: 'Indoor Swimming Pool',
@@ -77,3 +79,20 @@ export const AMENITY_SEED_DATA = [
   { name: 'Slippers', type: AmenityType.ROOM },
   { name: 'Work Desk', type: AmenityType.ROOM },
 ];
+
+export default class AmenitySeeder {
+  public async run(dataSource: DataSource): Promise<void> {
+    const amenityRepository = dataSource.getRepository(Amenity);
+
+    const count = await amenityRepository.count();
+    if (count > 0) {
+      console.log('✨ Amenities already exist. Skipping seeding...');
+      return;
+    }
+
+    await amenityRepository.save(AMENITY_SEED_DATA);
+    console.log(
+      `✅ ${AMENITY_SEED_DATA.length} Amenities created successfully!`,
+    );
+  }
+}

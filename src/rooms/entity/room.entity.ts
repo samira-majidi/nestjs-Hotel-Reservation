@@ -8,6 +8,8 @@ import {
   ManyToOne,
   JoinColumn,
   Unique,
+  ManyToMany,
+  JoinTable,
 } from 'typeorm';
 import { RoomStatus } from '../enums/room-status.enum';
 import { RoomType } from '../enums/room-type.enum';
@@ -16,6 +18,7 @@ import { Reservation } from '#src/reservations/entity/reservation.entity';
 import { RoomPricing } from './room-pricing.entity';
 import { Hotel } from '#src/hotels/entities/hotel.entity';
 import { DailyPrice } from './daily-price.entity';
+import { Upload } from '#src/common/upload/entity/upload.entity'; // اضافه کردن انتیتی آپلود
 
 @Entity('rooms')
 @Unique(['hotelId', 'roomNumber'])
@@ -38,17 +41,20 @@ export class Room {
   @Column({ type: 'int', default: 1 })
   floor: number;
 
-  @Column({ type: 'simple-array', nullable: true })
-  amenities: string[];
-
   @Column({ type: 'enum', enum: RoomStatus, default: RoomStatus.AVAILABLE })
   status: RoomStatus;
 
   @Column({ type: 'text', nullable: true })
   description: string;
 
-  @Column({ type: 'simple-array', nullable: true })
-  images: string[];
+  // فیلد قدیمی images حذف شد و جایگزین زیر اضافه شد:
+  @ManyToMany(() => Upload)
+  @JoinTable({
+    name: 'room_gallery_images', // نام جدول واسط در دیتابیس
+    joinColumn: { name: 'roomId', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'uploadId', referencedColumnName: 'id' },
+  })
+  galleryImages: Upload[];
 
   @OneToMany(() => Reservation, (reservation) => reservation.room)
   reservations: Reservation[];

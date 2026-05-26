@@ -1,9 +1,10 @@
-
 POST http://localhost:8080/uploads/file
-Authorization: Beare -YOUR_TOKEN
-------WebKitFormBoundary7MA4YWxkTrZu0gW
-Content-Disposition: form-data; name="file"; filename="screenshot.png"
-Content-Type: image/png
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjU5LCJlbWFpbCI6InNhbWlyYW1hamlkaUBnbWFpbC5jb20iLCJyb2xlIjoiaG9zdCIsImlhdCI6MTc3OTY0MTgyOSwiZXhwIjoxNzc5NjQ1NDI5LCJhdWQiOiJsb2NhbGhvc3Q6NTAwMCIsImlzcyI6ImxvY2FsaG9zdDo1MDAwIn0.NxwMttbafDb-IKx3OxA0tockWgrcjlzJK-y09ryd4ZI
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
 
-< C:/Users/ADMIN/hotel-booking/backend/hotel-booking-intro/src/common/upload/https/Screenshot 2026-05-16 210027.png
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="d653c93b-5550-40b2-8537-f0195eabd71d.png"
+Content-Type: image/jpeg
+
+< C:\Users\ADMIN\hotel-booking\backend\hotel-booking-intro\src\common\upload\https\d653c93b-5550-40b2-8537-f0195eabd71d.png
 ------WebKitFormBoundary7MA4YWxkTrZu0gW--

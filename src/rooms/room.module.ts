@@ -12,6 +12,7 @@ import { HotelsModule } from '#src/hotels/hotels.module';
 import { OwnershipModule } from '#src/auth/authorization/ownership.module';
 import { PricingRulesController } from './room-pricing-rules.controller';
 import { OwnershipHandlerRegistry } from '#src/auth/authorization/ownership-handler.registry';
+import { UploadModule } from '#src/common/upload/upload.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { OwnershipHandlerRegistry } from '#src/auth/authorization/ownership-hand
     }),
     OwnershipModule,
     HotelsModule,
+    UploadModule,
   ],
   controllers: [RoomsController, PricingRulesController],
   providers: [RoomService, PricingService, DailyPriceProcessor],

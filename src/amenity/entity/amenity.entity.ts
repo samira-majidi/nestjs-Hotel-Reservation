@@ -1,5 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { AmenityType } from './type/amenity-type.enum';
+import { AmenityType } from '../type/amenity-type.enum';
 
 @Entity('amenities')
 export class Amenity {
@@ -8,6 +8,9 @@ export class Amenity {
 
   @Column({ length: 64 })
   name: string;
+
+  @Column({ type: 'int', default: 1 })
+  stars: number;
 
   @Column({ type: 'enum', enum: AmenityType })
   type: AmenityType;

@@ -1,13 +1,13 @@
 POST http://localhost:8080/hotels
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQ5LCJlbWFpbCI6ImhhbWloZGdhZmdnc2RmQGdtYWlsLmNvbSIsInJvbGUiOiJob3N0IiwiaWF0IjoxNzc5MDg3MzYwLCJleHAiOjE3NzkwOTA5NjAsImF1ZCI6ImxvY2FsaG9zdDo1MDAwIiwiaXNzIjoibG9jYWxob3N0OjUwMDAifQ.cr2U8n0Bn8xfNgfg1-1Z8_JMgVH06FP5Wr0OShMXXKY
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjU5LCJlbWFpbCI6InNhbWlyYW1hamlkaUBnbWFpbC5jb20iLCJyb2xlIjoiaG9zdCIsImlhdCI6MTc3OTY0MTgyOSwiZXhwIjoxNzc5NjQ1NDI5LCJhdWQiOiJsb2NhbGhvc3Q6NTAwMCIsImlzcyI6ImxvY2FsaG9zdDo1MDAwIn0.NxwMttbafDb-IKx3OxA0tockWgrcjlzJK-y09ryd4ZI
 Content-Type: application/json
 
 {
   "name": "Grandtel",
-  "cityId": 1,
+  "cityId": 2,
   "phone": "+971-4-123-4567",
   "address": "Sheikh Zayed Road, Dubai",
   "description": "Luxury 5-star hotel with stunning sea views and world-class amenities",
-  "amenities": ["wifi", "pool", "gym", "spa", "restaurant", "airport shuttle"],
-  "imageIds": [7]
+  "amenityIds": [53,53,55],
+  "imageIds": [119,118]
 }
