@@ -17,6 +17,7 @@ import { createPaginatedResponse } from '#src/common/utill/pagination.util';
 import { UpdateHotelDto } from '../dtos/update-hotel.dto';
 import { GalleryManagerService } from '#src/common/upload/providers/gallery-manager.service';
 import { Upload } from '#src/common/upload/entity/upload.entity';
+import { Room } from '#src/rooms/entity/room.entity';
 
 @Injectable()
 export class HotelsService {
@@ -33,6 +34,9 @@ export class HotelsService {
 
     @InjectRepository(City)
     private readonly cityRepository: Repository<City>,
+
+    @InjectRepository(Room)
+    private readonly roomRepository: Repository<Room>,
   ) {}
 
   public async findById(id: number): Promise<Hotel | null> {
@@ -44,14 +48,14 @@ export class HotelsService {
 
   public async findAllHotel(
     paginationDto: PaginationDto,
-  ): Promise<PaginatedResponse<Hotel>> {
+  ): Promise<PaginatedResponse<Hotel & { minPrice: number | null }>> {
     const page = paginationDto.page ?? 1;
     const limit = paginationDto.limit ?? 10;
     const skip = (page - 1) * limit;
     const cacheKey = `hotel:all:page:${page}:limit:${limit}`;
 
     const cached =
-      await this.redisService.get<PaginatedResponse<Hotel>>(cacheKey);
+      await this.redisService.get<PaginatedResponse<any>>(cacheKey);
 
     if (cached) {
       this.logger.debug('cache hit : all hotel');
@@ -64,7 +68,15 @@ export class HotelsService {
       take: limit,
     });
 
-    const response = createPaginatedResponse(data, total, page, limit);
+    // --- اضافه شدن کمترین قیمت به هتل‌ها ---
+    const hotelsWithMinPrice = await this.attachMinPriceToHotels(data);
+
+    const response = createPaginatedResponse(
+      hotelsWithMinPrice,
+      total,
+      page,
+      limit,
+    );
     await this.redisService.set(cacheKey, response, this.CACHE_TTL);
     this.logger.debug(`Cached data for key: ${cacheKey}`);
     return response;
@@ -112,10 +124,15 @@ export class HotelsService {
       return savedHotel;
     });
   }
-
-  async findHotelById(hotelId: number): Promise<Hotel> {
+  async findHotelById(
+    hotelId: number,
+  ): Promise<Hotel & { minPrice: number | null }> {
     const cacheKey = `hotel:${hotelId}`;
-    const cached = await this.redisService.get<Hotel>(cacheKey);
+
+    // اصلاح تایپ کش
+    const cached = await this.redisService.get<
+      Hotel & { minPrice: number | null }
+    >(cacheKey);
 
     if (cached) {
       this.logger.debug(`Cache hit: find one hotel ${hotelId}`);
@@ -124,31 +141,32 @@ export class HotelsService {
 
     const hotel = await this.hotelRepository.findOne({
       where: { id: hotelId },
-      relations: ['owner', 'city', 'rooms', 'galleryImages'],
+      relations: ['city', 'rooms', 'galleryImages', 'amenities'],
     });
 
     if (!hotel) {
       throw new NotFoundException(`Hotel with id ${hotelId} not found`);
     }
 
-    await this.redisService.set(cacheKey, hotel, this.CACHE_TTL);
+    const [hotelWithMinPrice] = await this.attachMinPriceToHotels([hotel]);
+
+    await this.redisService.set(cacheKey, hotelWithMinPrice, this.CACHE_TTL);
     this.logger.log(`Hotel with id ${hotelId} found`);
 
-    return hotel;
+    return hotelWithMinPrice;
   }
   public async findHotelsByCityId(
     cityId: number,
     paginationDto: PaginationDto,
-  ): Promise<PaginatedResponse<Hotel>> {
+  ): Promise<PaginatedResponse<Hotel & { minPrice: number | null }>> {
     const page = paginationDto.page ?? 1;
     const limit = paginationDto.limit ?? 10;
     const skip = (page - 1) * limit;
 
-    // یک کلید کش اختصاصی برای هر شهر و هر صفحه
     const cacheKey = `hotel:city:${cityId}:page:${page}:limit:${limit}`;
 
     const cached =
-      await this.redisService.get<PaginatedResponse<Hotel>>(cacheKey);
+      await this.redisService.get<PaginatedResponse<any>>(cacheKey);
 
     if (cached) {
       this.logger.debug(`Cache hit: hotels for city ${cityId}`);
@@ -163,12 +181,20 @@ export class HotelsService {
 
     const [data, total] = await this.hotelRepository.findAndCount({
       where: { city: { id: cityId } }, // فیلتر بر اساس آیدی شهر
-      relations: ['owner', 'city', 'galleryImages'],
+      relations: ['owner', 'city', 'galleryImages', 'amenities'],
       skip,
       take: limit,
     });
 
-    const response = createPaginatedResponse(data, total, page, limit);
+    // --- اضافه شدن کمترین قیمت به هتل‌ها ---
+    const hotelsWithMinPrice = await this.attachMinPriceToHotels(data);
+
+    const response = createPaginatedResponse(
+      hotelsWithMinPrice,
+      total,
+      page,
+      limit,
+    );
     await this.redisService.set(cacheKey, response, this.CACHE_TTL);
     this.logger.debug(`Cached data for key: ${cacheKey}`);
 
@@ -256,5 +282,66 @@ export class HotelsService {
     } catch (error) {
       this.logger.error('Failed to invalidate hotel cache', error);
     }
+  }
+  private async attachMinPriceToHotels(
+    hotels: Hotel[],
+  ): Promise<(Hotel & { minPrice: number | null })[]> {
+    if (hotels.length === 0) {
+      return [];
+    }
+
+    const hotelIds = hotels.map((hotel) => hotel.id);
+
+    const prices = await this.roomRepository
+      .createQueryBuilder('room')
+      .select('room.hotelId', 'hotelId')
+      .addSelect('MIN(room.basePrice)', 'minPrice')
+      .where('room.hotelId IN (:...hotelIds)', { hotelIds })
+      .groupBy('room.hotelId')
+      .getRawMany<{ hotelId: number; minPrice: string }>(); // getRawMany a string for minPrice
+
+    const priceMap = new Map<number, number>();
+    prices.forEach((p) => {
+      priceMap.set(p.hotelId, parseFloat(p.minPrice)); // Convert string to number
+    });
+
+    return hotels.map((hotel) => ({
+      ...hotel,
+      minPrice: priceMap.get(hotel.id) || null,
+    }));
+  }
+  public async findRandomHotels(
+    limit: number = 4,
+  ): Promise<(Hotel & { minPrice: number | null })[]> {
+    // مرحله ۱: گرفتن فقط ID هتل‌ها به صورت رندوم (بدون Join برای جلوگیری از ارور DISTINCT)
+    const randomHotels = await this.hotelRepository
+      .createQueryBuilder('hotel')
+      .select('hotel.id')
+      .orderBy('RANDOM()') // نکته مهم: اگر Postgres است RANDOM() و اگر MySQL است RAND()
+      .limit(limit) // اینجا به جای take از limit استفاده می‌کنیم
+      .getMany();
+
+    const ids = randomHotels.map((h) => h.id);
+
+    // اگر هیچ هتلی تو دیتابیس نبود، همون اول آرایه خالی برمی‌گردونیم
+    if (ids.length === 0) {
+      this.logger.debug(`Fetched 0 random hotels`);
+      return [];
+    }
+
+    // مرحله ۲: گرفتن اطلاعات کامل هتل‌ها بر اساس IDهای استخراج شده با استفاده از Join
+    const data = await this.hotelRepository
+      .createQueryBuilder('hotel')
+      .leftJoinAndSelect('hotel.city', 'city')
+      .leftJoinAndSelect('hotel.galleryImages', 'galleryImages')
+      .leftJoinAndSelect('hotel.amenities', 'amenities')
+      .where('hotel.id IN (:...ids)', { ids })
+      .getMany();
+
+    // مرحله ۳: اضافه کردن کمترین قیمت به هتل‌های پیدا شده
+    const hotelsWithMinPrice = await this.attachMinPriceToHotels(data);
+
+    this.logger.debug(`Fetched ${hotelsWithMinPrice.length} random hotels`);
+    return hotelsWithMinPrice;
   }
 }

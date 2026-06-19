@@ -22,19 +22,24 @@ import { ActiveUser } from '#src/auth/decorators/active-user.decorator';
 import { CheckOwnership } from '#src/auth/authorization/ownership.decorator';
 import { OwnershipGuard } from '#src/auth/authorization/ownership.guard';
 import { PaginationDto } from '#src/common/dto/pagination.dto';
-import { HotelsService } from './providers/hotels.service';
+import { HotelsService } from '../providers/hotels.service';
 import { AuthType } from '#src/auth/enums/auth-type.enum';
 import { Auth } from '#src/auth/decorators/auth.decorator';
-import { UpdateHotelDto } from './dtos/update-hotel.dto';
-import { CreateHotelDto } from './dtos/create-hotel.dto';
+import { UpdateHotelDto } from '../dtos/update-hotel.dto';
+import { CreateHotelDto } from '../dtos/create-hotel.dto';
 import { PermissionGuard } from '#src/rbac/guards/permission.guard';
 import { Permissions } from '#src/rbac/decorators/permissions.decorator';
 import { Permission } from '#src/rbac/enums/permission.enum';
+import { GetHotelsFilterDto } from '../dtos/hotel-search.dto';
+import { HotelsSearchService } from '../providers/hotel-search.service';
 
 @ApiTags('Hotels')
 @Controller('hotels')
 export class HotelsController {
-  constructor(private readonly hotelsService: HotelsService) {}
+  constructor(
+    private readonly hotelsService: HotelsService,
+    private readonly hotelsSearchService: HotelsSearchService,
+  ) {}
 
   // ------------------------------
   // GET /hotels
@@ -49,6 +54,13 @@ export class HotelsController {
     console.log(CreateHotelDto);
     return this.hotelsService.findAllHotel(paginationDto);
   }
+  @Auth(AuthType.None)
+  @Get('search')
+  @ApiOperation({ summary: 'Search and filter hotels dynamically' })
+  searchHotels(@Query() filterDto: GetHotelsFilterDto) {
+    // 👈 اسم متد به searchAndFilter تغییر کرد
+    return this.hotelsSearchService.searchAndFilter(filterDto);
+  }
 
   // ------------------------------
   // GET /hotels/:id
@@ -61,6 +73,30 @@ export class HotelsController {
   @ApiResponse({ status: 404, description: 'Hotel not found' })
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.hotelsService.findHotelById(id);
+  }
+  // ------------------------------
+  // GET /hotels/city/:cityId
+  // ------------------------------
+  @Auth(AuthType.None)
+  @Get('city/:cityId')
+  @ApiOperation({ summary: 'Get paginated list of hotels by city ID' })
+  @ApiParam({
+    name: 'cityId',
+    required: true,
+    example: 5,
+    description: 'ID of the city to fetch hotels for',
+  })
+  @ApiQuery({ name: 'page', required: false, example: 1 })
+  @ApiQuery({ name: 'limit', required: false, example: 10 })
+  @ApiResponse({
+    status: 200,
+    description: 'Hotels for the specified city retrieved successfully',
+  })
+  findByCityId(
+    @Param('cityId', ParseIntPipe) cityId: number,
+    @Query() paginationDto: PaginationDto,
+  ) {
+    return this.hotelsService.findHotelsByCityId(cityId, paginationDto);
   }
 
   // ------------------------------
@@ -113,4 +149,22 @@ export class HotelsController {
   ) {
     return this.hotelsService.deleteHotel(hotelId, userId);
   }
+  // ------------------------------
+  // GET /hotels/random/featured
+  // ------------------------------
+  @Auth(AuthType.None)
+  @Get('random/featured')
+  @ApiOperation({
+    summary: 'Get 4 random hotels for Most Booked / Featured section',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Random hotels retrieved successfully',
+  })
+  getFeaturedHotels() {
+    // پاس دادن عدد ۴ برای دریافت ۴ هتل رندوم
+    return this.hotelsService.findRandomHotels(4);
+  }
+
+  // حتما HotelsSearchService رو توی constructor کنترلر inject کن
 }

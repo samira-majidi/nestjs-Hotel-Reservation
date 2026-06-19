@@ -14,4 +14,7 @@ export class CityService {
     });
     return this.cityRepository.save(city);
   }
+  public async findAllCities() {
+    return await this.cityRepository.find(); // اگه از TypeORM استفاده می‌کنی
+  }
 }

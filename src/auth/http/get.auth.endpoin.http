@@ -1,8 +1,8 @@
-POST http://localhost:3000/auth/register
+POST http://localhost:8080/auth/register
 Content-Type:application/json
 {
-  "name": "samira",
-  "lastName": "shakery",
-  "email": "samira@gmail.com",
-  "password": "7675dn7jPOo"
+  "name": "Systems",
+  "lastName": "Administrator",
+  "email": "system@hSFGSJookinss.com",
+  "password": "SystemUser!Secure2026"
 }

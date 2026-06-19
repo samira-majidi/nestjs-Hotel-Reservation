@@ -22,32 +22,3 @@ export class OwnershipHandlerRegistry {
     return this.handlers.get(entity);
   }
 }
-
-/*import { Hotel } from '#src/hotels/entities/hotel.entity';
-
-export interface OwnershipConfig {
-  model: new () => any;
-  idField: string;
-  ownerField: string;
-}
-
-export const OwnershipRegistry: Record<string, OwnershipConfig> = {
-  hotel: {
-    model: Hotel,
-    idField: 'id',
-    ownerField: 'ownerId',
-  },
-  /*
-  room: {
-    model: 'room',
-    idField: 'id',
-    ownerField: 'ownerId',
-  },
-
-  reservation: {
-    model: 'reservation',
-    idField: 'id',
-    ownerField: 'ownerId',
-  },
-};
-*/

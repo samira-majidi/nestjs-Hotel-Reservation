@@ -111,7 +111,7 @@ export class RoomService {
 
     const [data, total] = await this.roomRepository.findAndCount({
       where: { hotelId },
-      relations: ['galleryImages'], // لود کردن عکس‌ها در لیست
+      relations: ['galleryImages', 'hotel'], // لود کردن عکس‌ها در لیست
       skip,
       take: limit,
     });

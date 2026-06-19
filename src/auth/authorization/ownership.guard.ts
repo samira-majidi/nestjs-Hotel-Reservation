@@ -35,13 +35,6 @@ export class OwnershipGuard implements CanActivate {
     const entityId = /^\d+$/.test(entityIdRaw)
       ? Number(entityIdRaw)
       : entityIdRaw;
-    console.log('🔍 OwnershipGuard Debug:');
-    console.log('meta.entity:', meta.entity);
-    console.log('meta.param:', meta.param);
-    console.log('entityIdRaw:', entityIdRaw, typeof entityIdRaw);
-    console.log('entityId:', entityId, typeof entityId);
-    console.log('userId:', userId, typeof userId);
-
     if (userId == null) {
       throw new UnauthorizedException('User not authenticated.');
     }

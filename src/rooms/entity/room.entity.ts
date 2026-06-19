@@ -10,6 +10,7 @@ import {
   Unique,
   ManyToMany,
   JoinTable,
+  Index,
 } from 'typeorm';
 import { RoomStatus } from '../enums/room-status.enum';
 import { RoomType } from '../enums/room-type.enum';
@@ -22,6 +23,7 @@ import { Upload } from '#src/common/upload/entity/upload.entity'; // اضافه 
 
 @Entity('rooms')
 @Unique(['hotelId', 'roomNumber'])
+@Index('IDX_ROOM_CAPACITY_PRICE', ['capacity', 'basePrice'])
 export class Room {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -32,9 +34,11 @@ export class Room {
   @Column({ type: 'enum', enum: RoomType })
   type: RoomType;
 
+  @Index('IDX_ROOM_BASE_PRICE')
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   basePrice: number;
 
+  @Index('IDX_ROOM_CAPACITY')
   @Column({ type: 'int' })
   capacity: number;
 
@@ -72,6 +76,7 @@ export class Room {
   @JoinColumn({ name: 'hotelId' })
   hotel: Hotel;
 
+  @Index('IDX_ROOM_HOTEL_ID')
   @Column()
   hotelId: number;
 

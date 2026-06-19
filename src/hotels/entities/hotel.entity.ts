@@ -15,7 +15,7 @@ import {
 } from 'typeorm';
 import { Amenity } from '#src/amenity/entity/amenity.entity';
 @Entity()
-@Index(['id'])
+@Index('IDX_HOTEL_CITY_STARS', ['cityId', 'stars'])
 export class Hotel {
   @PrimaryGeneratedColumn()
   id: number;
@@ -25,7 +25,7 @@ export class Hotel {
   @ManyToOne(() => City, (city) => city.hotels)
   @JoinColumn({ name: 'cityId' })
   city: City;
-
+  @Index('IDX_HOTEL_CITY')
   @Column()
   cityId: number;
 
@@ -34,8 +34,11 @@ export class Hotel {
 
   @Column({ type: 'varchar', length: 255, nullable: false }) // دقیقاً ۲۵۵ کاراکتر
   address: string;
+
+  @Index('IDX_HOTEL_STARS')
   @Column({ type: 'int', default: 1 }) // اضافه شدن فیلد ستاره با پیش‌فرض ۱
   stars: number;
+
   @Column({ type: 'text', nullable: false })
   description: string;
 

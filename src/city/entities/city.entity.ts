@@ -9,6 +9,9 @@ export class City {
   @Column({ type: 'varchar', nullable: false })
   name: string;
 
+  @Column({ type: 'varchar', nullable: true })
+  imageUrl: string;
+
   @OneToMany(() => Hotel, (hotel) => hotel.city)
   hotels: Hotel[];
 }
