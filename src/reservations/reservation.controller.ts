@@ -1,4 +1,4 @@
-import { Body, Controller, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
 import { ReservationService } from './providers/reservation.service';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { CreateReservationDto } from './dtos/create-reservation.dto';
@@ -46,5 +46,19 @@ export class ReservationController {
   @ApiResponse({ status: 404, description: 'Reservation not found' })
   async confirmPayment(@Param('id') id: string) {
     return this.reservationService.confirmPayment(id);
+  }
+  @Get('my-reservations')
+  @ApiOperation({
+    summary: 'Get current user reservations',
+    description:
+      'Fetches all reservations for the authenticated user based on their token.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'List of user reservations returned successfully',
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  public getUserReservations(@ActiveUser('sub') userId: number) {
+    return this.reservationService.findByUserId(userId);
   }
 }

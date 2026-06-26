@@ -7,6 +7,7 @@ import AmenitySeeder from './seeders/amitity-seeder';
 import { UserSeeder } from './seeders/user-seeder';
 import HotelSeeder from './seeders/hotel-seeder';
 import RoomSeeder from './seeders/room-seeder';
+import RoomPricingSeeder from './seeders/RoomPricingSeeder';
 
 async function bootstrap() {
   try {
@@ -37,6 +38,11 @@ async function bootstrap() {
     await roomSeeder.run(AppDataSource);
     console.log('✔️ RoomSeeder completed');
 
+    // 👈 اضافه شدن اجرای سیدر قیمت‌گذاری بعد از اتاق‌ها
+    const roomPricingSeeder = new RoomPricingSeeder();
+    await roomPricingSeeder.run(AppDataSource);
+    console.log('✔️ RoomPricingSeeder completed');
+
     console.log('🎉 All seeds completed successfully!');
     process.exit(0);
   } catch (error) {
@@ -44,6 +50,7 @@ async function bootstrap() {
     process.exit(1);
   }
 }
+
 bootstrap().catch((error) => {
   console.error('❌ Unhandled error during bootstrap:', error);
   process.exit(1);

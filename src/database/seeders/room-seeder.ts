@@ -101,7 +101,7 @@ export default class RoomSeeder {
           type: Object.values(RoomType)[
             i % Object.values(RoomType).length
           ] as RoomType,
-          basePrice: i === 1 ? 2500000 : 4500000,
+          basePrice: i === 1 ? 120 : 220,
           capacity: i === 1 ? 2 : 4,
           floor: 1,
           status: RoomStatus.AVAILABLE,

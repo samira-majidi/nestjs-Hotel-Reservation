@@ -142,6 +142,20 @@ export class ReservationService {
     await this.redisService.del(`room:${roomId}`);
     await this.invalidateAllReservationCache();
   }
+  async findByUserId(userId: number): Promise<Reservation[]> {
+    return this.reservaionRepository.find({
+      where: { userId },
+      relations: {
+        room: {
+          hotel: true,
+          galleryImages: true,
+        },
+      }, // <--- آکولاد relations باید اینجا بسته بشه
+      order: {
+        createdAt: 'DESC',
+      },
+    });
+  }
   async findReservationOrFail(id: string): Promise<Reservation> {
     const reservation = await this.reservaionRepository.findOne({
       where: { id },

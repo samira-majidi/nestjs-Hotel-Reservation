@@ -2,6 +2,8 @@ import {
   Injectable,
   NotFoundException,
   RequestTimeoutException,
+  ConflictException,
+  InternalServerErrorException,
 } from '@nestjs/common';
 import { User } from '../user.entity';
 import { Repository } from 'typeorm';
@@ -22,8 +24,23 @@ export class UserService {
   ) {}
 
   public async createUser(creatUserDto: CreatUserDto, role: UserRole) {
-    return this.createUserProvider.createUser(creatUserDto, role);
+    try {
+      // استفاده از await برای شکار خطا در catch الزامی است
+      return await this.createUserProvider.createUser(creatUserDto, role);
+    } catch (error: unknown) {
+      // تعریف تایپ موقت برای خواندن پراپرتی code
+      const err = error as { code?: string };
+
+      if (err.code === '23505') {
+        throw new ConflictException('Email already exists');
+      }
+
+      throw new InternalServerErrorException(
+        'Something went wrong during registration',
+      );
+    }
   }
+
   public async findOwnerById(id: number): Promise<User> {
     const owner = await this.userRepository.findOneBy({ id });
 

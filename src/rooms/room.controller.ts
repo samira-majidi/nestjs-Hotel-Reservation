@@ -130,4 +130,36 @@ export class RoomsController {
   remove(@Param('id') roomId: string, @ActiveUser('sub') userId: number) {
     return this.roomService.remove(roomId, userId);
   }
+  // ------------------------------
+  // GET /rooms/:id/calendar
+  // ------------------------------
+  @Auth(AuthType.None)
+  @Get(':id/calendar')
+  @ApiOperation({ summary: 'Get room pricing calendar by date range' })
+  @ApiParam({ name: 'id', example: '550e8400-e29b-41d4-a716-446655440000' })
+  @ApiQuery({
+    name: 'startDate',
+    required: true,
+    example: '2026-06-20',
+    description: 'Start date in YYYY-MM-DD format',
+  })
+  @ApiQuery({
+    name: 'endDate',
+    required: true,
+    example: '2026-07-20',
+    description: 'End date in YYYY-MM-DD format',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Room calendar retrieved successfully',
+  })
+  @ApiResponse({ status: 400, description: 'Invalid date format' })
+  @ApiResponse({ status: 404, description: 'Room not found' })
+  getCalendar(
+    @Param('id') roomId: string,
+    @Query('startDate') startDate: string,
+    @Query('endDate') endDate: string,
+  ) {
+    return this.roomService.getRoomCalendar(roomId, startDate, endDate);
+  }
 }

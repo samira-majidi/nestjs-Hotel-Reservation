@@ -6,7 +6,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Between, Repository } from 'typeorm';
 
 import { PaginationDto } from '#src/common/dto/pagination.dto';
 import { PaginatedResponse } from '#src/common/interface/paginated-response.interface';
@@ -18,6 +18,7 @@ import { RedisService } from '#src/redis/providers/redis.service';
 import { CreateRoomDto } from '#src/rooms/dtos/create-room.dto';
 import { UpdateRoomDto } from '#src/rooms/dtos/update-room.dto';
 import { Room } from '#src/rooms/entity/room.entity';
+import { DailyPrice } from '#src/rooms/entity/daily-price.entity';
 
 @Injectable()
 export class RoomService {
@@ -28,7 +29,8 @@ export class RoomService {
   constructor(
     @InjectRepository(Room)
     private readonly roomRepository: Repository<Room>,
-
+    @InjectRepository(DailyPrice)
+    private readonly dailyPriceRepository: Repository<DailyPrice>,
     private readonly redisService: RedisService,
     private readonly hotelService: HotelsService,
     private readonly galleryManager: GalleryManagerService, // اضافه شدن گالری منیجر
@@ -249,5 +251,39 @@ export class RoomService {
     }
 
     return room;
+  }
+  async getRoomCalendar(
+    roomId: string,
+    startDate: string, // یا Date بسته به DTO شما
+    endDate: string, // یا Date
+  ): Promise<DailyPrice[]> {
+    // ۱. اول چک می‌کنیم اصلاً اتاقی با این آیدی وجود داره یا نه
+    const roomExists = await this.roomRepository.existsBy({ id: roomId });
+
+    if (!roomExists) {
+      throw new NotFoundException(`Room with ID ${roomId} not found`);
+    }
+
+    // ۲. تاریخ‌ها رو برای کوئری آماده می‌کنیم (اگه از فرانت استرینگ میاد)
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+
+    // ۳. کوئری زدن روی جدول قیمت‌های روزانه با استفاده از Between
+    const dailyPrices = await this.dailyPriceRepository.find({
+      where: {
+        roomId: roomId,
+        date: Between(start, end),
+      },
+      order: {
+        date: 'ASC', // حتماً مرتب‌سازی صعودی باشه که تو تقویم فرانت به هم نریزه
+      },
+      select: ['id', 'date', 'price', 'source'], // فیلدهای اضافی رو می‌تونی فیلتر کنی که دیتای سبک‌تری بره فرانت
+    });
+
+    this.logger.debug(
+      `Fetched ${dailyPrices.length} daily prices for room ${roomId}`,
+    );
+
+    return dailyPrices;
   }
 }
