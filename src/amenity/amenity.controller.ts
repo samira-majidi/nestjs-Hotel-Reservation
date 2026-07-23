@@ -4,12 +4,14 @@ import { AmenityType } from './type/amenity-type.enum';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { Amenity } from './entity/amenity.entity';
 import { FindAmenityByIdsDto } from './dto/findamenitybyid.dto';
+import { Auth } from '#src/auth/decorators/auth.decorator';
+import { AuthType } from '#src/auth/enums/auth-type.enum';
 
 @Controller('amenity')
 export class AmenityController {
   constructor(private readonly amenityService: AmenityService) {}
-
-  @Get('sport')
+  @Auth(AuthType.None)
+  @Get()
   async findAllamenityType(@Query('type') type?: AmenityType) {
     return this.amenityService.findAll(type);
   }

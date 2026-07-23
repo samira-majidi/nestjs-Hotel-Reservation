@@ -246,6 +246,7 @@ export class HotelsService {
     const updatedHotel = await this.hotelRepository.save({
       ...hotel,
       ...hotelData,
+      amenities,
     });
 
     await this.invalidateHotelCache();
@@ -270,10 +271,8 @@ export class HotelsService {
   private async invalidateHotelCache(): Promise<void> {
     try {
       // پیدا کردن کلیدهای مربوط به همه هتل‌ها و هتل‌های بر اساس شهر
-      const allHotelKeys = await this.redisService.keys('hotel:all:*');
-      const cityHotelKeys = await this.redisService.keys('hotel:city:*');
 
-      const keys = [...allHotelKeys, ...cityHotelKeys];
+      const keys = await this.redisService.keys('hotel:*');
 
       if (keys.length > 0) {
         await Promise.all(keys.map((key) => this.redisService.del(key)));
@@ -343,5 +342,31 @@ export class HotelsService {
 
     this.logger.debug(`Fetched ${hotelsWithMinPrice.length} random hotels`);
     return hotelsWithMinPrice;
+  }
+  public async findHotelByOwnerId(userId: number): Promise<Hotel | null> {
+    const cacheKey = `hotel:owner:${userId}`;
+
+    // ۱. چک کردن کش (اختیاری ولی برای پرفورمنس عالیه)
+    const cached = await this.redisService.get<Hotel>(cacheKey);
+    if (cached) {
+      this.logger.debug(`Cache hit: find hotel for owner ${userId}`);
+      return cached;
+    }
+
+    // ۲. پیدا کردن هتل در دیتابیس
+    const hotel = await this.hotelRepository.findOne({
+      where: { ownerId: userId },
+      relations: ['city', 'galleryImages', 'amenities'], // هر ریلیشنی که برای داشبورد نیاز داری
+    });
+
+    if (!hotel) {
+      // دقت کن اینجا Exception پرت نمی‌کنیم، چون ممکنه کاربر تازه مالک شده باشه و هنوز هتل نساخته باشه
+      // پس null برمی‌گردونیم تا فرانت‌بفهمه باید فرم ثبت هتل رو نشون بده
+      return null;
+    }
+
+    await this.redisService.set(cacheKey, hotel, this.CACHE_TTL);
+    this.logger.log(`Hotel for owner ${userId} fetched and cached`);
+    return hotel;
   }
 }

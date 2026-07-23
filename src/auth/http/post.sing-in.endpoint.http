@@ -1,8 +1,8 @@
 POST http://localhost:8080/auth/sign-in
 Content-Type:application/json
 {
-   "email": "system@hotelbooking.com",
-  "password": "SystemUser!Secure2026"
+   "email": "hamidshakery56@gmail.com",
+  "password": "211067Ha"
   }
 
 

@@ -40,7 +40,17 @@ export class HotelsController {
     private readonly hotelsService: HotelsService,
     private readonly hotelsSearchService: HotelsSearchService,
   ) {}
-
+  @Get('my-hotel')
+  @ApiOperation({
+    summary: 'Get the hotel belonging to the currently logged in owner',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Owner hotel retrieved successfully or null if none exists',
+  })
+  getMyHotel(@ActiveUser('sub') userId: number) {
+    return this.hotelsService.findHotelByOwnerId(userId);
+  }
   // ------------------------------
   // GET /hotels
   // ------------------------------
@@ -165,6 +175,4 @@ export class HotelsController {
     // پاس دادن عدد ۴ برای دریافت ۴ هتل رندوم
     return this.hotelsService.findRandomHotels(4);
   }
-
-  // حتما HotelsSearchService رو توی constructor کنترلر inject کن
 }

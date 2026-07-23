@@ -168,8 +168,15 @@ export class ReservationService {
     return reservation;
   }
 
-  //همیشه دسترسی رو موقع رزرو چک کن
-  //محاسبهreal time
+  async findByHotelId(hotelId: number) {
+    return await this.reservaionRepository.find({
+      where: {
+        room: { hotel: { id: hotelId } },
+      },
+      relations: ['user', 'room'],
+    });
+  }
+
   async checkroomAvailibility(
     roomId: string,
     checkIn: Date,

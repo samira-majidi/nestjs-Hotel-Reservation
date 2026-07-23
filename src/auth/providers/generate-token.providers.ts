@@ -34,7 +34,7 @@ export class GenerateTokenProviders {
       this.signToken<Partial<ActiveUserData>>(
         user.id,
         this.jwtConfiguration.accessTokenTtl,
-        { email: user.email, role: user.role },
+        { email: user.email, role: user.role, name: user.name },
       ),
 
       //generate the RefreshToken

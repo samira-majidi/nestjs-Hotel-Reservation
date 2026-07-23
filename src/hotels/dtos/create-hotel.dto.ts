@@ -10,7 +10,6 @@ import {
   Max,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
 
 export class CreateHotelDto {
   @ApiProperty({
@@ -88,9 +87,14 @@ export class CreateHotelDto {
     example: [1, 2, 3],
     type: [Number],
   })
+  @ApiProperty({
+    description: 'Array of uploaded file IDs for hotel gallery',
+    example: [1, 2, 3],
+    type: [Number],
+  })
+  @IsOptional() // یا اگر عکس اجباریه از @ArrayNotEmpty() استفاده کن
   @IsArray()
   @IsInt({ each: true })
-  @Type(() => Number)
-  @IsNotEmpty()
-  imageIds: number[];
+  // @Type(() => Number) 👈 این خط رو کاملا پاک کن
+  imageIds?: number[];
 }

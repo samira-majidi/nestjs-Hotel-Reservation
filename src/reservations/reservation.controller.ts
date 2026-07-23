@@ -26,6 +26,20 @@ export class ReservationController {
   ) {
     return this.reservationService.create(createReservationDto, userId);
   }
+  // reservation.controller.ts
+
+  @Get('hotel/:hotelId')
+  @ApiOperation({
+    summary: 'Get reservations for a specific hotel',
+    description: 'Fetches all reservations belonging to a specific hotel ID.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'List of hotel reservations returned successfully',
+  })
+  public getReservationsByHotel(@Param('hotelId') hotelId: number) {
+    return this.reservationService.findByHotelId(hotelId);
+  }
 
   @Patch(':id/cancel')
   async cancel(@Param('id') id: string, @ActiveUser('sub') userId: number) {

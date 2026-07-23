@@ -1,4 +1,4 @@
 ### Get deleted room (expect 404)
-DELETE http://localhost:3000/rooms/cd77afda-9da1-49ca-8e92-d48637e1e183
+DELETE http://localhost:8080/rooms/cd77afda-9da1-49ca-8e92-d48637e1e183
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQ5LCJlbWFpbCI6ImhhbWloZGdhZmdnc2RmQGdtYWlsLmNvbSIsInJvbGUiOiJob3N0IiwiaWF0IjoxNzc3MzAwMzY0LCJleHAiOjE3NzczMDM5NjQsImF1ZCI6ImxvY2FsaG9zdDozMDAwIiwiaXNzIjoibG9jYWxob3N0OjMwMDAifQ.DdRm0lFA22x2b2fVGKxqqcxHIoxHVOXfhFh6huhu8Oo
    

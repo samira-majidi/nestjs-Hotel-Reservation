@@ -38,6 +38,7 @@ export class UploadService {
         'image/jpeg',
         'image/jpg',
         'image/png',
+        'image/webp',
       ];
 
       if (!allowedMimeTypes.includes(file.mimetype)) {

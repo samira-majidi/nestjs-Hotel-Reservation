@@ -1,13 +1,12 @@
 POST http://localhost:8080/hotels
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjU5LCJlbWFpbCI6InNhbWlyYW1hamlkaUBnbWFpbC5jb20iLCJyb2xlIjoiaG9zdCIsImlhdCI6MTc3OTY0MTgyOSwiZXhwIjoxNzc5NjQ1NDI5LCJhdWQiOiJsb2NhbGhvc3Q6NTAwMCIsImlzcyI6ImxvY2FsaG9zdDo1MDAwIn0.NxwMttbafDb-IKx3OxA0tockWgrcjlzJK-y09ryd4ZI
+Authorization:Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEwNywiZW1haWwiOiJoYW1pZHNoYWtlcnk1NkBnbWFpbC5jb20iLCJyb2xlIjoiaG9zdCIsImlhdCI6MTc4MzU3ODYzOCwiZXhwIjoxNzgzNjY1MDM4LCJhdWQiOiJsb2NhbGhvc3Q6NTAwMCIsImlzcyI6ImxvY2FsaG9zdDo1MDAwIn0.y2iHAcSKYdcyfBg1GSqrHofJD1v8iHdNpPivyggPD7Y
 Content-Type: application/json
-
 {
   "name": "Grandtel",
-  "cityId": 2,
+  "cityId": 8,
   "phone": "+971-4-123-4567",
   "address": "Sheikh Zayed Road, Dubai",
   "description": "Luxury 5-star hotel with stunning sea views and world-class amenities",
-  "amenityIds": [53,53,55],
-  "imageIds": [119,118]
+  "amenityIds": [150,141,122],
+  "imageIds": [202]
 }
